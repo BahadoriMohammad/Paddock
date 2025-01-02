@@ -1,5 +1,7 @@
+#Author Mohammad Bahadori
 #codes for Paddock Soil Data Processing
-#updoad soil data from .dat file
+
+#uploading soil data from .dat file
 
 #Read the file without headers
 tempData <- read.table(file = "Ross T1_SoilData.dat", header = FALSE, sep = "\t")
@@ -66,8 +68,8 @@ write.table(EC, file = "EC.dat", sep = "\t", row.names = FALSE, col.names = TRUE
 EC[, 1] <- as.POSIXct(EC[, 1], format = "%d/%m/%Y %H:%M")
 
 #Choose your desired y-axis limits (and change it manually in line below).
-y_min <- min(c(EC[, 2], EC[, 3], EC[, 4], EC[, 5], EC[, 6], EC[, 7]), na.rm = TRUE)
-y_max <- max(c(EC[, 2], EC[, 3], EC[, 4], EC[, 5], EC[, 6], EC[, 7]), na.rm = TRUE)
+#y_min <- min(c(EC[, 2], EC[, 3], EC[, 4], EC[, 5], EC[, 6], EC[, 7]), na.rm = TRUE)
+#y_max <- max(c(EC[, 2], EC[, 3], EC[, 4], EC[, 5], EC[, 6], EC[, 7]), na.rm = TRUE)
 
 #Create a plot with timestamp on the x-axis and adjusted y-axis limits (adjust the y_max and y_min as you wish)
 plot(EC[, 1], EC[, 2], type = 'l', col = 'red', xlab = 'Timestamp', ylab = 'Values', 
@@ -126,16 +128,26 @@ arrows(x0 = bar_centers, y0 = results$Mean - results$SD,
        x1 = bar_centers, y1 = results$Mean + results$SD, 
        angle = 90, code = 3, length = 0.1, col = 'darkred')
 
-# Do some ANOVA
 
-# Load necessary package for Levene's test
-install.packages("car")
-library(car)
+# Do ANOVA
 
-# Assuming EC is loaded
+# Ensure that you have the reshape2 package installed
+install.packages("reshape2")
+library(reshape2)
 
-# ANOVA test (if normally distributed)
-res.aov <- aov(EC[, 2] ~ EC[, 3] + EC[, 4] + EC[, 5] + EC[, 6] + EC[, 7])
-summary(res.aov)
+#Melt the data frame from wide format to long format for ANOVA
+longEC <- melt(EC, id.vars = "TIMESTAMP", measure.vars = colnames(EC)[2:7])
 
+# Perform ANOVA
+aov_results <- aov(value ~ variable, data = longEC)
+
+# Display the summary of the ANOVA
+summary(aov_results)
+
+# Post-hoc test if ANOVA significant
+if (summary(aov_results)[[1]][["Pr(>F)"]][1] < 0.05) {
+  TukeyHSD(aov_results)
+} else {
+  print("ANOVA is not significant; post-hoc analysis is not applicable.")
+}
 
