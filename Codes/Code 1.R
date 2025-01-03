@@ -151,3 +151,4 @@ if (summary(aov_results)[[1]][["Pr(>F)"]][1] < 0.05) {
   print("ANOVA is not significant; post-hoc analysis is not applicable.")
 }
 
+#Do it for each treatment
