@@ -1,6 +1,13 @@
 #Author Mohammad Bahadori
 #codes for Paddock Soil Data Processing
 
+#Psckages to install/call
+#install.packages("ggplot2")
+#install.packages("reshape2")
+#library(ggplot2)
+#library(reshape2)
+
+
 #uploading soil data from .dat file
 
 #Read the file without headers
@@ -66,10 +73,9 @@ head(VWC)
 #Write the 'VWC' dataframe to a .dat file with a tab delimiter and save it
 write.table(VWC, file = "VWC1.dat", sep = "\t", row.names = FALSE, col.names = TRUE)
 
-#Create the plot using ggplot2
 
-install.packages("ggplot2")
-library(ggplot2)
+
+#Create the plot using ggplot2
 
 # Convert the date strings in column 1 to POSIXct datetime objects
 VWC[, 1] <- as.POSIXct(VWC[, 1], format = "%d/%m/%Y %H:%M")
@@ -92,27 +98,29 @@ lines(VWC[, 1], VWC[, 7], col = 'yellow')
 legend("bottomright", legend = c("VWC 1", "VWC 2", "VWC 3", "VWC 4", "VWC 5", "VWC 6"),
        col = c('red', 'blue', 'green', 'purple', 'orange', 'yellow'), lty = 1, cex = 0.8)
 
+
+
 # Do some basic statistics
 # Assuming VWC is your dataset with named columns
 
 # List of column names from the 2nd to the 7th
-columnNames <- names(VWC)[2:7]
+columnNames_VWC <- names(VWC)[2:7]
 
 # Calculate mean and SD for each of the specified columns
-means <- sapply(VWC[, columnNames], mean, na.rm = TRUE)
-sds <- sapply(VWC[, columnNames], sd, na.rm = TRUE)
+means_VWC <- sapply(VWC[, columnNames_VWC], mean, na.rm = TRUE)
+sds_VWC <- sapply(VWC[, columnNames_VWC], sd, na.rm = TRUE)
 
 # Create a new dataframe for the results
-results <- data.frame(
-  Mean = means,
-  SD = sds
+results_VWC <- data.frame(
+  Mean_VWC = means_VWC,
+  SD_VWC = sds_VWC
 )
 
 # Set the row names of the results dataframe to the column names
-rownames(results) <- columnNames
+rownames(results_VWC) <- columnNames_VWC
 
 # Display the results
-print(results)
+print(results_VWC)
 
 # make a graph to compare VWC across lysimeters
 
@@ -120,37 +128,36 @@ print(results)
 # for each of the columns
 
 # Create a bar plot for the mean values
-barplot(results$Mean, names.arg = rownames(results), beside = TRUE,
-        col = 'lightblue', ylim = c(0, max(results$Mean + results$SD)),
+barplot(results_VWC$Mean, names.arg = rownames(results_VWC), beside = TRUE,
+        col = 'lightblue', ylim = c(0, max(results_VWC$Mean + results_VWC$SD)),
         main = "Mean values with SD error bars", ylab = "Mean values")
 
 # Add error bars for SD
 # Calculate the center position of each bar on the x-axis
-bar_centers <- barplot(results$Mean, plot = FALSE)
+bar_centers_VWC <- barplot(results_VWC$Mean, plot = FALSE)
 
 # Add the error bars using the arrow function
-arrows(x0 = bar_centers, y0 = results$Mean - results$SD,
-       x1 = bar_centers, y1 = results$Mean + results$SD,
+arrows(x0 = bar_centers_VWC, y0 = results_VWC$Mean - results_VWC$SD,
+       x1 = bar_centers_VWC, y1 = results_VWC$Mean + results_VWC$SD,
        angle = 90, code = 3, length = 0.1, col = 'darkred')
 
-# Do ANOVA
 
+
+# Do ANOVA
 # Ensure that you have the reshape2 package installed
-install.packages("reshape2")
-library(reshape2)
 
 #Melt the data frame from wide format to long format for ANOVA
 longVWC <- melt(VWC, id.vars = "TIMESTAMP", measure.vars = colnames(VWC)[2:7])
 
 # Perform ANOVA
-aov_results <- aov(value ~ variable, data = longVWC)
+aov_results_VWC <- aov(value ~ variable, data = longVWC)
 
 # Display the summary of the ANOVA
-summary(aov_results)
+summary(aov_results_VWC)
 
 # Post-hoc test if ANOVA significant
-if (summary(aov_results)[[1]][["Pr(>F)"]][1] < 0.05) {
-  TukeyHSD(aov_results)
+if (summary(aov_results_VWC)[[1]][["Pr(>F)"]][1] < 0.05) {
+  TukeyHSD(aov_results_VWC)
 } else {
   print("ANOVA is not significant; post-hoc analysis is not applicable.")
 }
@@ -190,8 +197,6 @@ write.table(EC, file = "EC1.dat", sep = "\t", row.names = FALSE, col.names = TRU
 
 
 #Create the plot using ggplot2
-#install.packages("ggplot2")
-#library(ggplot2)
 
 # Convert the date strings in column 1 to POSIXct datetime objects
 EC[, 1] <- as.POSIXct(EC[, 1], format = "%d/%m/%Y %H:%M")
@@ -219,24 +224,23 @@ legend("bottomright", legend = c("EC 1", "EC 2", "EC 3", "EC 4", "EC 5", "EC 6")
 # Assuming EC is your dataset with named columns
 
 # List of column names from the 2nd to the 7th
-columnNames <- names(EC)[2:7]
+columnNames_EC <- names(EC)[2:7]
 
 # Calculate mean and SD for each of the specified columns
-means <- sapply(EC[, columnNames], mean, na.rm = TRUE)
-sds <- sapply(EC[, columnNames], sd, na.rm = TRUE)
+means_EC <- sapply(EC[, columnNames_EC], mean, na.rm = TRUE)
+sds_EC <- sapply(EC[, columnNames_EC], sd, na.rm = TRUE)
 
 # Create a new dataframe for the results
-results <- data.frame(
-  Mean = means, 
-  SD = sds
+results_EC <- data.frame(
+  Mean_EC = means_EC,
+  SD_EC = sds_EC
 )
 
 # Set the row names of the results dataframe to the column names
-rownames(results) <- columnNames
+rownames(results_EC) <- columnNames_EC
 
 # Display the results
-print(results)
-
+print(results_EC)
 
 # make a graph to compare EC across lysimeters
 
@@ -244,41 +248,41 @@ print(results)
 # for each of the columns
 
 # Create a bar plot for the mean values
-barplot(results$Mean, names.arg = rownames(results), beside = TRUE,
-        col = 'lightblue', ylim = c(0, max(results$Mean + results$SD)), 
+barplot(results_EC$Mean_EC, names.arg = rownames(results_EC), beside = TRUE,
+        col = 'lightblue', ylim = c(0, max(results_EC$Mean_EC + results_EC$SD_EC)),
         main = "Mean values with SD error bars", ylab = "Mean values")
 
 # Add error bars for SD
 # Calculate the center position of each bar on the x-axis
-bar_centers <- barplot(results$Mean, plot = FALSE)
+bar_centers_EC <- barplot(results_EC$Mean_EC, plot = FALSE)
 
 # Add the error bars using the arrow function
-arrows(x0 = bar_centers, y0 = results$Mean - results$SD, 
-       x1 = bar_centers, y1 = results$Mean + results$SD, 
+arrows(x0 = bar_centers_EC, y0 = results_EC$Mean_EC - results_EC$SD_EC,
+       x1 = bar_centers_EC, y1 = results_EC$Mean_EC + results_EC$SD_EC,
        angle = 90, code = 3, length = 0.1, col = 'darkred')
 
 
 # Do ANOVA
 
 # Ensure that you have the reshape2 package installed
-#install.packages("reshape2")
-#library(reshape2)
+# Commented out because it should be run manually only if needed
 
 #Melt the data frame from wide format to long format for ANOVA
 longEC <- melt(EC, id.vars = "TIMESTAMP", measure.vars = colnames(EC)[2:7])
 
 # Perform ANOVA
-aov_results <- aov(value ~ variable, data = longEC)
+aov_results_EC <- aov(value ~ variable, data = longEC)
 
 # Display the summary of the ANOVA
-summary(aov_results)
+summary(aov_results_EC)
 
 # Post-hoc test if ANOVA significant
-if (summary(aov_results)[[1]][["Pr(>F)"]][1] < 0.05) {
-  TukeyHSD(aov_results)
+if (summary(aov_results_EC)[[1]][["Pr(>F)"]][1] < 0.05) {
+  TukeyHSD(aov_results_EC)
 } else {
   print("ANOVA is not significant; post-hoc analysis is not applicable.")
 }
+
 
 
 # Finally let's do Temperature
@@ -311,8 +315,7 @@ head(Temp)
 write.table(Temp, file = "Temp1.dat", sep = "\t", row.names = FALSE, col.names = TRUE)
 
 #Create the plot using ggplot2
-#install.packages("ggplot2")
-#library(ggplot2)
+
 # Convert the date strings in column 1 to POSIXct datetime objects
 Temp[, 1] <- as.POSIXct(Temp[, 1], format = "%d/%m/%Y %H:%M")
 
@@ -338,23 +341,23 @@ legend("bottomright", legend = c("Temp 1", "Temp 2", "Temp 3", "Temp 4", "Temp 5
 # Assuming Temp is your dataset with named columns
 
 # List of column names from the 2nd to the 7th
-columnNames <- names(Temp)[2:7]
+columnNames_Temp <- names(Temp)[2:7]
 
 # Calculate mean and SD for each of the specified columns
-means <- sapply(Temp[, columnNames], mean, na.rm = TRUE)
-sds <- sapply(Temp[, columnNames], sd, na.rm = TRUE)
+means_Temp <- sapply(Temp[, columnNames_Temp], mean, na.rm = TRUE)
+sds_Temp <- sapply(Temp[, columnNames_Temp], sd, na.rm = TRUE)
 
 # Create a new dataframe for the results
-results <- data.frame(
-  Mean = means,
-  SD = sds
+results_Temp <- data.frame(
+  Mean_Temp = means_Temp,
+  SD_Temp = sds_Temp
 )
 
 # Set the row names of the results dataframe to the column names
-rownames(results) <- columnNames
+rownames(results_Temp) <- columnNames_Temp
 
 # Display the results
-print(results)
+print(results_Temp)
 
 # make a graph to compare Temp across lysimeters
 
@@ -362,37 +365,35 @@ print(results)
 # for each of the columns
 
 # Create a bar plot for the mean values
-barplot(results$Mean, names.arg = rownames(results), beside = TRUE,
-        col = 'lightblue', ylim = c(0, max(results$Mean + results$SD)),
+barplot(results_Temp$Mean_Temp, names.arg = rownames(results_Temp), beside = TRUE,
+        col = 'lightblue', ylim = c(0, max(results_Temp$Mean_Temp + results_Temp$SD_Temp)),
         main = "Mean values with SD error bars", ylab = "Mean values")
 
 # Add error bars for SD
 # Calculate the center position of each bar on the x-axis
-bar_centers <- barplot(results$Mean, plot = FALSE)
+bar_centers_Temp <- barplot(results_Temp$Mean_Temp, plot = FALSE)
 
 # Add the error bars using the arrow function
-arrows(x0 = bar_centers, y0 = results$Mean - results$SD,
-       x1 = bar_centers, y1 = results$Mean + results$SD,
+arrows(x0 = bar_centers_Temp, y0 = results_Temp$Mean_Temp - results_Temp$SD_Temp,
+       x1 = bar_centers_Temp, y1 = results_Temp$Mean_Temp + results_Temp$SD_Temp,
        angle = 90, code = 3, length = 0.1, col = 'darkred')
 
 # Do ANOVA
 
 # Ensure that you have the reshape2 package installed
-#install.packages("reshape2")
-#library(reshape2)
 
 #Melt the data frame from wide format to long format for ANOVA
 longTemp <- melt(Temp, id.vars = "TIMESTAMP", measure.vars = colnames(Temp)[2:7])
 
 # Perform ANOVA
-aov_results <- aov(value ~ variable, data = longTemp)
+aov_results_Temp <- aov(value ~ variable, data = longTemp)
 
 # Display the summary of the ANOVA
-summary(aov_results)
+summary(aov_results_Temp)
 
 # Post-hoc test if ANOVA significant
-if (summary(aov_results)[[1]][["Pr(>F)"]][1] < 0.05) {
-  TukeyHSD(aov_results)
+if (summary(aov_results_Temp)[[1]][["Pr(>F)"]][1] < 0.05) {
+  TukeyHSD(aov_results_Temp)
 } else {
   print("ANOVA is not significant; post-hoc analysis is not applicable.")
 }
