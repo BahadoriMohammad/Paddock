@@ -11,7 +11,8 @@
 #uploading soil data from .dat file
 
 #Read the file without headers
-tempData <- read.table(file = "Ross T1_SoilData.dat", header = FALSE, sep = "\t")
+tempData <- read.table(file = "Ross T1_SoilData.dat", header = FALSE, sep = ",", fill = TRUE)
+
 
 # Check that the file has been read correctly by looking at the top
 head(tempData)
@@ -57,9 +58,9 @@ sapply(VWC[, 2:7], class)
 VWC[, 2:7] <- sapply(VWC[, 2:7], function(x) as.numeric(as.character(x)))
 
 # Remove rows that contain any NaN values
+
 # First, loop through all elements and convert any "nan" or "NAN" strings to NA
 VWC[VWC == "nan" | VWC == "NAN"] <- NA
-
 # Then, use na.omit() to remove any rows containing NA values in the dataset
 VWC <- na.omit(VWC)
 
@@ -78,7 +79,7 @@ write.table(VWC, file = "VWC1.dat", sep = "\t", row.names = FALSE, col.names = T
 #Create the plot using ggplot2
 
 # Convert the date strings in column 1 to POSIXct datetime objects
-VWC[, 1] <- as.POSIXct(VWC[, 1], format = "%d/%m/%Y %H:%M")
+VWC[, 1] <- as.POSIXct(VWC[, 1], format = "%Y-%m-%d %H:%M")
 
 #Choose your desired y-axis limits (and change it manually in line below).
 #y_min <- min(c(VWC[, 2], VWC[, 3], VWC[, 4], VWC[, 5], VWC[, 6], VWC[, 7]), na.rm = TRUE)
@@ -199,7 +200,7 @@ write.table(EC, file = "EC1.dat", sep = "\t", row.names = FALSE, col.names = TRU
 #Create the plot using ggplot2
 
 # Convert the date strings in column 1 to POSIXct datetime objects
-EC[, 1] <- as.POSIXct(EC[, 1], format = "%d/%m/%Y %H:%M")
+EC[, 1] <- as.POSIXct(EC[, 1], format = "%Y-%m-%d %H:%M")
 
 #Choose your desired y-axis limits (and change it manually in line below).
 #y_min <- min(c(EC[, 2], EC[, 3], EC[, 4], EC[, 5], EC[, 6], EC[, 7]), na.rm = TRUE)
@@ -317,7 +318,7 @@ write.table(Temp, file = "Temp1.dat", sep = "\t", row.names = FALSE, col.names =
 #Create the plot using ggplot2
 
 # Convert the date strings in column 1 to POSIXct datetime objects
-Temp[, 1] <- as.POSIXct(Temp[, 1], format = "%d/%m/%Y %H:%M")
+Temp[, 1] <- as.POSIXct(Temp[, 1], format = "%Y-%m-%d %H:%M")
 
 #Choose your desired y-axis limits (and change it manually in line below).
 #y_min <- min(c(Temp[, 2], Temp[, 3], Temp[, 4], Temp[, 5], Temp[, 6], Temp[, 7]), na.rm = TRUE)
