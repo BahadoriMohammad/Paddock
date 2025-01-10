@@ -8,9 +8,9 @@
 #library(reshape2)
 
 
-####################Soil Data Processing########################################
+#############################Soil Data Processing########################################
 
-#########Treatment 1###########################################################
+###################################  Treatment 1#####################################
 
 #uploading soil data from .dat file
 
@@ -41,6 +41,10 @@ VWC <- SoilData[, c(1, 3, 6, 9, 12, 15, 18)]
 EC <- SoilData[, c(1, 4, 7, 10, 13, 16, 19)]
 Temp <- SoilData[, c(1, 5, 8, 11, 14, 17, 20)]
 
+SV_VWC <- SoilData[, c(1, 21, 25, 29, 33, 37, 41, 45, 49, 53)]
+SV_EC <- SoilData[, c(1, 24, 28, 32, 36, 40, 44, 48, 52, 56)]
+SV_Temp <- SoilData[, c(1, 23, 27, 31, 35, 39, 43, 47, 51, 55)]
+
 
 # Alternatively, if the columns are consecutive, you can use
 #VWC <- SoilData[, 1:6]
@@ -49,7 +53,7 @@ Temp <- SoilData[, c(1, 5, 8, 11, 14, 17, 20)]
 
 
 
-####################Lets do VWC first
+##################VWC  ###########
 
 # Check the structure and head of the 'VWC' dataset
 str(VWC)
@@ -69,7 +73,7 @@ VWC[VWC == "nan" | VWC == "NAN"] <- NA
 VWC <- na.omit(VWC)
 
 # to exclude rows with any zeros
-VWC <- VWC[!apply(VWC == 0, 1, any), ]
+WVWC <- VWC[!apply(VWC == 0, 1, any), ]
 
 # Check the structure and head of the 'VWCp' dataset
 str(VWC)
@@ -168,7 +172,7 @@ if (summary(aov_results_VWC)[[1]][["Pr(>F)"]][1] < 0.05) {
 }
 
 
-########## Now let's do EC
+################# EC #####
 
 # Check the structure and head of the 'EC' dataset
 str(EC)
@@ -289,7 +293,7 @@ if (summary(aov_results_EC)[[1]][["Pr(>F)"]][1] < 0.05) {
 }
 
 
-############# Finally let's do Temperature
+#################Tempe #####
 
 # Check the structure and head of the 'Temp' dataset
 str(Temp)
@@ -403,8 +407,16 @@ if (summary(aov_results_Temp)[[1]][["Pr(>F)"]][1] < 0.05) {
 }
 
 
+####SV_VWC###
 
-#################Treatment 2############################
+
+####SV_EC###
+
+
+####SV_Temp###
+
+
+###################################  Treatment 2############################
 
 
 
@@ -435,6 +447,10 @@ VWC2 <- SoilData2[, c(1, 3, 6, 9, 12, 15, 18)]
 EC2 <- SoilData2[, c(1, 4, 7, 10, 13, 16, 19)]
 Temp2 <- SoilData2[, c(1, 5, 8, 11, 14, 17, 20)]
 
+SV_VWC2 <- SoilData2[, c(1, 21, 25, 29, 33, 37, 41, 45, 49, 53)]
+SV_EC2 <- SoilData2[, c(1, 24, 28, 32, 36, 40, 44, 48, 52, 56)]
+SV_Temp2 <- SoilData2[, c(1, 23, 27, 31, 35, 39, 43, 47, 51, 55)]
+
 # Alternatively, if the columns are consecutive, you can use
 #VWC2 <- SoilData2[, 1:6]
 # EC2 <- SoilData2[, 1:6]
@@ -443,7 +459,7 @@ Temp2 <- SoilData2[, c(1, 5, 8, 11, 14, 17, 20)]
 
 
 
-#################### Lets do VWC2 first
+#################VWC2 ####
 
 # Check the structure and head of the 'VWC2' dataset
 str(VWC2)
@@ -555,7 +571,7 @@ if (summary(aov_results_VWC2)[[1]][["Pr(>F)"]][1] < 0.05) {
 
 
 
-######EC2
+##################EC2#######
 
 # Check the structure and head of the 'EC2' dataset
 str(EC2)
@@ -675,7 +691,7 @@ if (summary(aov_results_EC2)[[1]][["Pr(>F)"]][1] < 0.05) {
   print("ANOVA is not significant; post-hoc analysis is not applicable.")
 }
 
-#######Temp2
+##################Temp2#########
 
 # Check the structure and head of the 'Temp2' dataset
 str(Temp2)
@@ -792,7 +808,16 @@ if (summary(aov_results_Temp2)[[1]][["Pr(>F)"]][1] < 0.05) {
 
 
 
-#################Treatment 3############################
+####SV_VWC2###
+
+
+####SV_EC2###
+
+
+####SV_Temp2###
+
+
+#################################### Treatment 3###############################
 
 
 
@@ -806,7 +831,7 @@ head(tempData3)
 str(tempData3)
 
 # Set the column names to the values of the second row
-colnames(tempData2) <- as.character(tempData2[2, ])
+colnames(tempData3) <- as.character(tempData3[2, ])
 
 # Remove unnecessary rows 
 SoilData3 <- tempData3[-c(1, 2, 3, 4), ]
@@ -823,6 +848,11 @@ VWC3 <- SoilData2[, c(1, 3, 6, 9, 12, 15, 18)]
 EC3 <- SoilData2[, c(1, 4, 7, 10, 13, 16, 19)]
 Temp3 <- SoilData2[, c(1, 5, 8, 11, 14, 17, 20)]
 
+SV_VWC3 <- SoilData3[, c(1, 21, 25, 29, 33, 37, 41, 45, 49, 53)]
+SV_EC3 <- SoilData3[, c(1, 24, 28, 32, 36, 40, 44, 48, 52, 56)]
+SV_Temp3 <- SoilData3[, c(1, 23, 27, 31, 35, 39, 43, 47, 51, 55)]
+
+
 # Alternatively, if the columns are consecutive, you can use
 #VWC2 <- SoilData2[, 1:6]
 # EC2 <- SoilData2[, 1:6]
@@ -830,7 +860,7 @@ Temp3 <- SoilData2[, c(1, 5, 8, 11, 14, 17, 20)]
 
 
 
-#################### Lets do VWC3 first
+##################VWC3 ######
 
 # Check the structure and head of the 'VWC3' dataset
 str(VWC3)
@@ -940,7 +970,7 @@ if (summary(aov_results_VWC3)[[1]][["Pr(>F)"]][1] < 0.05) {
 
 
 
-########EC3
+##################EC3######
 
 
 # Check the structure and head of the 'EC3' dataset
@@ -1064,7 +1094,7 @@ if (summary(aov_results_EC3)[[1]][["Pr(>F)"]][1] < 0.05) {
 
 
 
-#######Temp3
+#################Temp3######
 
 # Check the structure and head of the 'Temp3' dataset
 str(Temp3)
@@ -1178,16 +1208,21 @@ if (summary(aov_results_Temp3)[[1]][["Pr(>F)"]][1] < 0.05) {
   print("ANOVA is not significant; post-hoc analysis is not applicable.")
 }
 
+####SV_VWC3###
 
+
+####SV_EC3###
+
+
+####SV_Temp3###
 
 
 ############################ Lysimeter Data Processing##########################
 
+
+###################################  treatment 1################
+
 #uploading Lysimeter data from .dat file
-
-######################treatment 1################
-
-
 #Read the "Ross T1_LysimeterData.dat" file without headers
 tempData_L1 <- read.table(file = "Ross T1_LysimeterData.dat", header = FALSE, sep = ",", fill = TRUE)
 
@@ -1223,7 +1258,7 @@ Lys_EC <- LysData[, c(1, 6, 12, 18, 24, 30, 36)]
 #Lys_EC <- LysData[, 1:6]
 
 
-# Lets do Lys_mod_depth first
+#############Lys_mod_depth ###########
 
 # Check the structure and head of the 'Lys_mod_depth' dataset
 str(Lys_mod_depth)
@@ -1343,7 +1378,7 @@ if (summary(aov_results_Lys_mod_depth)[[1]][["Pr(>F)"]][1] < 0.05) {
 
 
 
-# Now let's do Lys_Temp
+############ Lys_Temp ######
 
 # Check the structure and head of the 'Lys_Temp' dataset
 str(Lys_Temp)
@@ -1461,7 +1496,7 @@ if (summary(aov_results_Lys_Temp)[[1]][["Pr(>F)"]][1] < 0.05) {
 
 
 
-# Finally let's do Lys_EC
+#############Lys_EC#########
 
 # Check the structure and head of the 'Lys_EC' dataset
 str(Lys_EC)
@@ -1577,9 +1612,9 @@ if (summary(aov_results_Lys_EC)[[1]][["Pr(>F)"]][1] < 0.05) {
 
 
 
-######################treatment 2################
+##################################  treatment 2################
 
-
+#uploading Lysimeter data from .dat file
 #Read the "Ross T2_LysimeterData.dat" file without headers
 tempData_L2 <- read.table(file = "Ross T2_LysimeterData.dat", header = FALSE, sep = ",", fill = TRUE)
 
@@ -1615,7 +1650,7 @@ Lys2_EC <- LysData2[, c(1, 6, 12, 18, 24, 30, 36)]
 #Lys_EC <- LysData[, 1:6]
 
 
-# Lets do Lys2_mod_depth first
+#############Lys2_mod_depth#########
 
 # Check the structure and head of the 'Lys2_mod_depth' dataset
 str(Lys2_mod_depth)
@@ -1728,7 +1763,7 @@ if (summary(aov_results_Lys2_mod_depth)[[1]][["Pr(>F)"]][1] < 0.05) {
   print("ANOVA is not significant; post-hoc analysis is not applicable.")
 }
 
-# Now let's do Lys2_Temp
+#############Lys2_Temp########
 
 # Check the structure and head of the 'Lys2_Temp' dataset
 str(Lys2_Temp)
@@ -1841,7 +1876,7 @@ if (summary(aov_results_Lys2_Temp)[[1]][["Pr(>F)"]][1] < 0.05) {
   print("ANOVA is not significant; post-hoc analysis is not applicable.")
 }
 
-# Finally let's do Lys2_EC
+#############Lys2_EC#########
 
 
 # Check the structure and head of the 'Lys2_EC' dataset
@@ -1958,7 +1993,7 @@ if (summary(aov_results_Lys2_EC)[[1]][["Pr(>F)"]][1] < 0.05) {
 
 
 
-######################  treatment 3  ################
+#################################   treatment  3  ################
 
 
 #Read the "Ross T3_LysimeterData.dat" file without headers
@@ -1996,7 +2031,7 @@ Lys3_EC <- LysData3[, c(1, 6, 12, 18, 24, 30, 36)]
 #Lys_EC <- LysData[, 1:6]
 
 
-# Let's do Lys3_mod_depth first
+#############Lys3_mod_depth#####
 
 # Check the structure and head of the 'Lys3_mod_depth' dataset
 str(Lys3_mod_depth)
@@ -2109,7 +2144,7 @@ if (summary(aov_results_Lys3_mod_depth)[[1]][["Pr(>F)"]][1] < 0.05) {
   print("ANOVA is not significant; post-hoc analysis is not applicable.")
 }
 
-# Now let's do Lys3_Temp
+#############Lys3_Temp########
 
 # Check the structure and head of the 'Lys3_Temp' dataset
 str(Lys3_Temp)
@@ -2222,7 +2257,7 @@ if (summary(aov_results_Lys3_Temp)[[1]][["Pr(>F)"]][1] < 0.05) {
   print("ANOVA is not significant; post-hoc analysis is not applicable.")
 }
 
-# Finally let's do Lys3_EC
+#############Lys3_EC########
 
 # Check the structure and head of the 'Lys3_EC' dataset
 str(Lys3_EC)
@@ -2334,6 +2369,11 @@ if (summary(aov_results_Lys3_EC)[[1]][["Pr(>F)"]][1] < 0.05) {
 } else {
   print("ANOVA is not significant; post-hoc analysis is not applicable.")
 }
+
+
+
+
+#            Cheers :) Mohammad
 
 
 
