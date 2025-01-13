@@ -7,8 +7,7 @@
 #library(ggplot2)
 #library(reshape2)
 
-
-#############################Soil Data Processing########################################
+####################################################Soil Data Processing########################################
 
 ###################################  Treatment 1#####################################
 
@@ -53,7 +52,7 @@ SV_Temp <- SoilData[, c(1, 23, 27, 31, 35, 39, 43, 47, 51, 55)]
 
 
 
-##################VWC  ###########
+###########VWC  ###########
 
 # Check the structure and head of the 'VWC' dataset
 str(VWC)
@@ -172,7 +171,7 @@ if (summary(aov_results_VWC)[[1]][["Pr(>F)"]][1] < 0.05) {
 }
 
 
-################# EC #####
+###########EC #####
 
 # Check the structure and head of the 'EC' dataset
 str(EC)
@@ -293,7 +292,7 @@ if (summary(aov_results_EC)[[1]][["Pr(>F)"]][1] < 0.05) {
 }
 
 
-#################Tempe #####
+###########Tempe #####
 
 # Check the structure and head of the 'Temp' dataset
 str(Temp)
@@ -407,18 +406,355 @@ if (summary(aov_results_Temp)[[1]][["Pr(>F)"]][1] < 0.05) {
 }
 
 
-####SV_VWC###
+#################SV_VWC##########
+# Check the structure and head of the 'SV_VWC' dataset
+str(SV_VWC)
+head(SV_VWC)
+
+# Check to see whether data are "as characer" or "numeric"
+sapply(SV_VWC[, 2:10], class)
+
+# Convert all columns 2 to 10 to numeric if needed
+SV_VWC[, 2:10] <- sapply(SV_VWC[, 2:10], function(x) as.numeric(as.character(x)))
+
+# Remove rows that contain any NaN values
+
+# First, loop through all elements and convert any "nan" or "NAN" strings to NaN
+SV_VWC[SV_VWC == "nan" | SV_VWC == "NAN"] <- NaN
+# Then, use na.omit() to remove any rows containing NaN values in the dataset
+#SV_VWC <- na.omit(SV_VWC)
+
+# to exclude rows with any zeros
+#SV_VWC <- SV_VWC[!apply(SV_VWC == 0, 1, any), ]
+
+# Check the structure and head of the 'SV_VWCp' dataset
+str(SV_VWC)
+head(SV_VWC)
+
+#Write the 'SV_VWC' dataframe to a .dat file with a tab delimiter and save it
+write.table(SV_VWC, file = "SV_VWC1.dat", sep = "\t", row.names = FALSE, col.names = TRUE)
+
+#Create the plot using ggplot2
+
+# Convert the date strings in column 1 to POSIXct datetime objects
+SV_VWC[, 1] <- as.POSIXct(SV_VWC[, 1], format = "%Y-%m-%d %H:%M")
+
+#Choose your desired y-axis limits (and change it manually in line below).
+#y_min <- min(c(SV_VWC[, 2], SV_VWC[, 3], SV_VWC[, 4], SV_VWC[, 5], SV_VWC[, 6], SV_VWC[, 7], SV_VWC[, 8], SV_VWC[, 9], SV_VWC[, 10])), na.rm = TRUE)
+#y_max <- max(c(SV_VWC[, 2], SV_VWC[, 3], SV_VWC[, 4], SV_VWC[, 5], SV_VWC[, 6], SV_VWC[, 7], SV_VWC[, 8], SV_VWC[, 9], SV_VWC[, 10]), na.rm = TRUE)
+
+#Create a plot with timestamp on the x-axis and adjusted y-axis limits (adjust the y_max and y_min as you wish)
+plot(SV_VWC[, 1], SV_VWC[, 2], type = 'l', col = 'red', xlab = 'Timestamp', ylab = 'Values',
+     main = 'SV_VWC Over Time', ylim = c(0.30, 0.45))
+
+# Add the rest of the series to the same plot
+lines(SV_VWC[, 1], SV_VWC[, 3], col = 'blue')
+lines(SV_VWC[, 1], SV_VWC[, 4], col = 'green')
+lines(SV_VWC[, 1], SV_VWC[, 5], col = 'purple')
+lines(SV_VWC[, 1], SV_VWC[, 6], col = 'orange')
+lines(SV_VWC[, 1], SV_VWC[, 7], col = 'yellow')
+lines(SV_VWC[, 1], SV_VWC[, 8], col = 'brown')
+lines(SV_VWC[, 1], SV_VWC[, 9], col = 'lightblue')
+lines(SV_VWC[, 1], SV_VWC[, 10], col = 'lightgreen')
+# Add a legend to distinguish the different lines
+legend("bottomright", legend = c("SV_VWC 5cm", "SV_VWC 10cm", "SV_VWC 20cm", "SV_VWC 30cm", "SV_VWC 40cm", "SV_VWC 50cm", "SV_VWC 60cm", "SV_VWC 75cm", "SV_VWC 100cm"),
+       col = c('red', 'blue', 'green', 'purple', 'orange', 'yellow', 'brown', 'lightblue', 'lightgreen'), lty = 1, cex = 0.8)
+
+# Do some basic statistics
+# Assuming SV_VWC is your dataset with named columns
+
+# List of column names from the 2nd to the 7th
+columnNames_SV_VWC <- names(SV_VWC)[2:10]
+
+# Calculate mean and SD for each of the specified columns
+means_SV_VWC <- sapply(SV_VWC[, columnNames_SV_VWC], mean, na.rm = TRUE)
+sds_SV_VWC <- sapply(SV_VWC[, columnNames_SV_VWC], sd, na.rm = TRUE)
+
+# Create a new dataframe for the results
+results_SV_VWC <- data.frame(
+  Mean_SV_VWC = means_SV_VWC,
+  SD_SV_VWC = sds_SV_VWC
+)
+
+# Set the row names of the results dataframe to the column names
+rownames(results_SV_VWC) <- columnNames_SV_VWC
+
+# Display the results
+print(results_SV_VWC)
+
+# make a graph to compare SV_VWC in soil profive
+
+# Assuming 'results' dataframe contains the mean and SD information
+# for each of the columns
+
+# Create a bar plot for the mean values
+barplot(results_SV_VWC$Mean_SV_VWC, names.arg = rownames(results_SV_VWC), beside = TRUE,
+        col = 'lightblue', ylim = c(0, max(results_SV_VWC$Mean_SV_VWC + results_SV_VWC$SD_SV_VWC)),
+        main = "Mean values with SD error bars", ylab = "Mean values")
+
+# Add error bars for SD
+# Calculate the center position of each bar on the x-axis
+bar_centers_SV_VWC <- barplot(results_SV_VWC$Mean_SV_VWC, plot = FALSE)
+
+# Add the error bars using the arrows function
+arrows(x0 = bar_centers_SV_VWC, y0 = results_SV_VWC$Mean_SV_VWC - results_SV_VWC$SD_SV_VWC,
+       x1 = bar_centers_SV_VWC, y1 = results_SV_VWC$Mean_SV_VWC + results_SV_VWC$SD_SV_VWC,
+       angle = 90, code = 3, length = 0.1, col = 'darkred')
+
+# Do ANOVA
+# Ensure that you have the reshape2 package installed
+
+##Melt the data frame from wide format to long format for ANOVA
+longSV_VWC <- melt(SV_VWC, id.vars = "TIMESTAMP", measure.vars = colnames(SV_VWC)[2:10])
+
+##Perform ANOVA
+aov_results_SV_VWC <- aov(value ~ variable, data = longSV_VWC)
+
+##Display the summary of the ANOVA
+summary(aov_results_SV_VWC)
+
+##Post-hoc test if ANOVA significant
+#if (summary(aov_results_SV_VWC)[[1]][["Pr(>F)"]][1] < 0.05) {
+ # TukeyHSD(aov_results_SV_VWC)
+#} else {
+  #print("ANOVA is not significant; post-hoc analysis is not applicable.")
+#}
 
 
-####SV_EC###
+
+#################SV_EC#######
+# Check the structure and head of the 'SV_EC' dataset
+str(SV_EC)
+head(SV_EC)
+
+# Check to see whether data are "as character" or "numeric"
+sapply(SV_EC[, 2:10], class)
+
+# Convert all columns 2 to 10 to numeric if needed
+SV_EC[, 2:10] <- sapply(SV_EC[, 2:10], function(x) as.numeric(as.character(x)))
+
+# Remove rows that contain any NaN values
+
+## First, loop through all elements and convert any "nan" or "NAN" strings to NaN
+#SV_EC[SV_EC == "nan" | SV_EC == "NAN"] <- NaN
+##Then, use na.omit() to remove any rows containing NaN values in the dataset
+#SV_EC <- na.omit(SV_EC)
+
+##to exclude rows with any zeros
+#SV_EC <- SV_EC[!apply(SV_EC == 0, 1, any), ]
+
+# Check the structure and head of the 'SV_ECp' dataset
+str(SV_EC)
+head(SV_EC)
+
+#Write the 'SV_EC' dataframe to a .dat file with a tab delimiter and save it
+write.table(SV_EC, file = "SV_EC1.dat", sep = "\t", row.names = FALSE, col.names = TRUE)
+
+# Create the plot using ggplot2
+
+# Convert the date strings in column 1 to POSIXct datetime objects
+SV_EC[, 1] <- as.POSIXct(SV_EC[, 1], format = "%Y-%m-%d %H:%M")
+
+#Choose your desired y-axis limits (and change it manually in line below).
+#y_min <- min(c(SV_EC[, 2], SV_EC[, 3], SV_EC[, 4], SV_EC[, 5], SV_EC[, 6], SV_EC[, 7], SV_EC[, 8], SV_EC[, 9], SV_EC[, 10]), na.rm = TRUE)
+#y_max <- max(c(SV_EC[, 2], SV_EC[, 3], SV_EC[, 4], SV_EC[, 5], SV_EC[, 6], SV_EC[, 7], SV_EC[, 8], SV_EC[, 9], SV_EC[, 10]), na.rm = TRUE)
+
+#Create a plot with timestamp on the x-axis and adjusted y-axis limits (adjust the y_max and y_min as you wish)
+plot(SV_EC[, 1], SV_EC[, 2], type = 'l', col = 'red', xlab = 'Timestamp', ylab = 'Values',
+     main = 'SV_EC Over Time', ylim = c(0.30, 0.45))
+
+# Add the rest of the series to the same plot
+lines(SV_EC[, 1], SV_EC[, 3], col = 'blue')
+lines(SV_EC[, 1], SV_EC[, 4], col = 'green')
+lines(SV_EC[, 1], SV_EC[, 5], col = 'purple')
+lines(SV_EC[, 1], SV_EC[, 6], col = 'orange')
+lines(SV_EC[, 1], SV_EC[, 7], col = 'yellow')
+lines(SV_EC[, 1], SV_EC[, 8], col = 'brown')
+lines(SV_EC[, 1], SV_EC[, 9], col = 'lightblue')
+lines(SV_EC[, 1], SV_EC[, 10], col = 'lightgreen')
+# Add a legend to distinguish the different lines
+legend("bottomright", legend = c("SV_EC 5cm", "SV_EC 10cm", "SV_EC 20cm", "SV_EC 30cm", "SV_EC 40cm", "SV_EC 50cm", "SV_EC 60cm", "SV_EC 75cm", "SV_EC 100cm"),
+       col = c('red', 'blue', 'green', 'purple', 'orange', 'yellow', 'brown', 'lightblue', 'lightgreen'), lty = 1, cex = 0.8)
+
+# Do some basic statistics
+# Assuming SV_EC is your dataset with named columns
+
+# List of column names from the 2nd to the 7th
+columnNames_SV_EC <- names(SV_EC)[2:10]
+
+# Calculate mean and SD for each of the specified columns
+means_SV_EC <- sapply(SV_EC[, columnNames_SV_EC], mean, na.rm = TRUE)
+sds_SV_EC <- sapply(SV_EC[, columnNames_SV_EC], sd, na.rm = TRUE)
+
+# Create a new dataframe for the results
+results_SV_EC <- data.frame(
+  Mean_SV_EC = means_SV_EC,
+  SD_SV_EC = sds_SV_EC
+)
+
+# Set the row names of the results dataframe to the column names
+rownames(results_SV_EC) <- columnNames_SV_EC
+
+# Display the results
+print(results_SV_EC)
+
+# make a graph to compare SV_EC across paddock
+
+# Assuming 'results' dataframe contains the mean and SD information
+# for each of the columns
+
+# Create a bar plot for the mean values
+barplot(results_SV_EC$Mean_SV_EC, names.arg = rownames(results_SV_EC), beside = TRUE,
+        col = 'lightblue', ylim = c(0, max(results_SV_EC$Mean_SV_EC + results_SV_EC$SD_SV_EC)),
+        main = "Mean values with SD error bars", ylab = "Mean values")
+
+# Add error bars for SD
+# Calculate the center position of each bar on the x-axis
+bar_centers_SV_EC <- barplot(results_SV_EC$Mean_SV_EC, plot = FALSE)
+
+# Add the error bars using the arrows function
+arrows(x0 = bar_centers_SV_EC, y0 = results_SV_EC$Mean_SV_EC - results_SV_EC$SD_SV_EC,
+       x1 = bar_centers_SV_EC, y1 = results_SV_EC$Mean_SV_EC + results_SV_EC$SD_SV_EC,
+       angle = 90, code = 3, length = 0.1, col = 'darkred')
+
+# Do ANOVA
+##Ensure that you have the reshape2 package installed
+
+#Melt the data frame from wide format to long format for ANOVA
+longSV_EC <- melt(SV_EC, id.vars = "TIMESTAMP", measure.vars = colnames(SV_EC)[2:10])
+
+##Perform ANOVA
+aov_results_SV_EC <- aov(value ~ variable, data = longSV_EC)
+
+# Display the summary of the ANOVA
+summary(aov_results_SV_EC)
+
+##Post-hoc test if ANOVA significant
+#if (summary(aov_results_SV_EC)[[1]][["Pr(>F)"]][1] < 0.05) {
+  #TukeyHSD(aov_results_SV_EC)
+#} else {
+  #print("ANOVA is not significant; post-hoc analysis is not applicable.")
+#}
 
 
-####SV_Temp###
+
+#################SV_Temp##########
+# Check the structure and head of the 'SV_Temp' dataset
+str(SV_Temp)
+head(SV_Temp)
+
+# Check to see whether data are "as character" or "numeric"
+sapply(SV_Temp[, 2:10], class)
+
+# Convert all columns 2 to 10 to numeric if needed
+SV_Temp[, 2:10] <- sapply(SV_Temp[, 2:10], function(x) as.numeric(as.character(x)))
+
+# Remove rows that contain any NaN values
+
+## First, loop through all elements and convert any "nan" or "NAN" strings to NaN
+#SV_Temp[SV_Temp == "nan" | SV_Temp == "NAN"] <- NaN
+##Then, use na.omit() to remove any rows containing NaN values in the dataset
+#SV_Temp <- na.omit(SV_Temp)
+
+##to exclude rows with any zeros
+#SV_Temp <- SV_Temp[!apply(SV_Temp == 0, 1, any), ]
+
+# Check the structure and head of the 'SV_Temp' dataset
+str(SV_Temp)
+head(SV_Temp)
+
+#Write the 'SV_Temp' dataframe to a .dat file with a tab delimiter and save it
+write.table(SV_Temp, file = "SV_Temp1.dat", sep = "\t", row.names = FALSE, col.names = TRUE)
+
+# Create the plot using ggplot2
+
+# Convert the date strings in column 1 to POSIXct datetime objects
+SV_Temp[, 1] <- as.POSIXct(SV_Temp[, 1], format = "%Y-%m-%d %H:%M")
+
+#Choose your desired y-axis limits (and change it manually in line below).
+#y_min <- min(c(SV_Temp[, 2], SV_Temp[, 3], SV_Temp[, 4], SV_Temp[, 5], SV_Temp[, 6], SV_Temp[, 7], SV_Temp[, 8], SV_Temp[, 9], SV_Temp[, 10]), na.rm = TRUE)
+#y_max <- max(c(SV_Temp[, 2], SV_Temp[, 3], SV_Temp[, 4], SV_Temp[, 5], SV_Temp[, 6], SV_Temp[, 7], SV_Temp[, 8], SV_Temp[, 9], SV_Temp[, 10]), na.rm = TRUE)
+
+#Create a plot with timestamp on the x-axis and adjusted y-axis limits (adjust the y_max and y_min as you wish)
+plot(SV_Temp[, 1], SV_Temp[, 2], type = 'l', col = 'red', xlab = 'Timestamp', ylab = 'Values',
+     main = 'SV_Temp Over Time', ylim = c(0.30, 0.45))
+
+# Add the rest of the series to the same plot
+lines(SV_Temp[, 1], SV_Temp[, 3], col = 'blue')
+lines(SV_Temp[, 1], SV_Temp[, 4], col = 'green')
+lines(SV_Temp[, 1], SV_Temp[, 5], col = 'purple')
+lines(SV_Temp[, 1], SV_Temp[, 6], col = 'orange')
+lines(SV_Temp[, 1], SV_Temp[, 7], col = 'yellow')
+lines(SV_Temp[, 1], SV_Temp[, 8], col = 'brown')
+lines(SV_Temp[, 1], SV_Temp[, 9], col = 'lightblue')
+lines(SV_Temp[, 1], SV_Temp[, 10], col = 'lightgreen')
+# Add a legend to distinguish the different lines
+legend("bottomright", legend = c("SV_Temp 5cm", "SV_Temp 10cm", "SV_Temp 20cm", "SV_Temp 30cm", "SV_Temp 40cm", "SV_Temp 50cm", "SV_Temp 60cm", "SV_Temp 75cm", "SV_Temp 100cm"),
+       col = c('red', 'blue', 'green', 'purple', 'orange', 'yellow', 'brown', 'lightblue', 'lightgreen'), lty = 1, cex = 0.8)
+
+# Do some basic statistics
+# Assuming SV_Temp is your dataset with named columns
+
+# List of column names from the 2nd to the 7th
+columnNames_SV_Temp <- names(SV_Temp)[2:10]
+
+# Calculate mean and SD for each of the specified columns
+means_SV_Temp <- sapply(SV_Temp[, columnNames_SV_Temp], mean, na.rm = TRUE)
+sds_SV_Temp <- sapply(SV_Temp[, columnNames_SV_Temp], sd, na.rm = TRUE)
+
+# Create a new dataframe for the results
+results_SV_Temp <- data.frame(
+  Mean_SV_Temp = means_SV_Temp,
+  SD_SV_Temp = sds_SV_Temp
+)
+
+# Set the row names of the results dataframe to the column names
+rownames(results_SV_Temp) <- columnNames_SV_Temp
+
+# Display the results
+print(results_SV_Temp)
+
+# make a graph to compare SV_Temp across paddock
+
+# Assuming 'results' dataframe contains the mean and SD information
+# for each of the columns
+
+# Create a bar plot for the mean values
+barplot(results_SV_Temp$Mean_SV_Temp, names.arg = rownames(results_SV_Temp), beside = TRUE,
+        col = 'lightblue', ylim = c(0, max(results_SV_Temp$Mean_SV_Temp + results_SV_Temp$SD_SV_Temp)),
+        main = "Mean values with SD error bars", ylab = "Mean values")
+
+# Add error bars for SD
+# Calculate the center position of each bar on the x-axis
+bar_centers_SV_Temp <- barplot(results_SV_Temp$Mean_SV_Temp, plot = FALSE)
+
+# Add the error bars using the arrows function
+arrows(x0 = bar_centers_SV_Temp, y0 = results_SV_Temp$Mean_SV_Temp - results_SV_Temp$SD_SV_Temp,
+       x1 = bar_centers_SV_Temp, y1 = results_SV_Temp$Mean_SV_Temp + results_SV_Temp$SD_SV_Temp,
+       angle = 90, code = 3, length = 0.1, col = 'darkred')
+
+# Do ANOVA
+# Ensure that you have the reshape2 package installed
+
+#Melt the data frame from wide format to long format for ANOVA
+longSV_Temp <- melt(SV_Temp, id.vars = "TIMESTAMP", measure.vars = colnames(SV_Temp)[2:10])
+
+# Perform ANOVA
+aov_results_SV_Temp <- aov(value ~ variable, data = longSV_Temp)
+
+# Display the summary of the ANOVA
+summary(aov_results_SV_Temp)
+
+##Post-hoc test if ANOVA significant
+#if (summary(aov_results_SV_Temp)[[1]][["Pr(>F)"]][1] < 0.05) {
+  #TukeyHSD(aov_results_SV_Temp)
+#} else {
+  #print("ANOVA is not significant; post-hoc analysis is not applicable.")
+#}
+
 
 
 ###################################  Treatment 2############################
-
-
 
 #uploading soil data from .dat file
 
@@ -456,10 +792,7 @@ SV_Temp2 <- SoilData2[, c(1, 23, 27, 31, 35, 39, 43, 47, 51, 55)]
 # EC2 <- SoilData2[, 1:6]
 #Temp2 <- SoilData2[, 1:6]
 
-
-
-
-#################VWC2 ####
+###########VWC2 ####
 
 # Check the structure and head of the 'VWC2' dataset
 str(VWC2)
@@ -571,7 +904,7 @@ if (summary(aov_results_VWC2)[[1]][["Pr(>F)"]][1] < 0.05) {
 
 
 
-##################EC2#######
+###########EC2#######
 
 # Check the structure and head of the 'EC2' dataset
 str(EC2)
@@ -691,7 +1024,7 @@ if (summary(aov_results_EC2)[[1]][["Pr(>F)"]][1] < 0.05) {
   print("ANOVA is not significant; post-hoc analysis is not applicable.")
 }
 
-##################Temp2#########
+###########Temp2#########
 
 # Check the structure and head of the 'Temp2' dataset
 str(Temp2)
@@ -806,15 +1139,347 @@ if (summary(aov_results_Temp2)[[1]][["Pr(>F)"]][1] < 0.05) {
 }
 
 
+#################SV_VWC2##########
+# Check the structure and head of the 'SV_VWC2' dataset
+str(SV_VWC2)
+head(SV_VWC2)
+
+# Check to see whether data are "as character" or "numeric"
+sapply(SV_VWC2[, 2:10], class)
+
+# Convert all columns 2 to 10 to numeric if needed
+SV_VWC2[, 2:10] <- sapply(SV_VWC2[, 2:10], function(x) as.numeric(as.character(x)))
+
+# Remove rows that contain any NaN values
+
+##First, loop through all elements and convert any "nan" or "NAN" strings to NaN
+#SV_VWC2[SV_VWC2 == "nan" | SV_VWC2 == "NAN"] <- NaN
+##Then, use na.omit() to remove any rows containing NaN values in the dataset
+#SV_VWC2 <- na.omit(SV_VWC2)
+
+# to exclude rows with any zeros
+#SV_VWC2 <- SV_VWC2[!apply(SV_VWC2 == 0, 1, any), ]
+
+# Check the structure and head of the 'SV_VWCp' dataset
+str(SV_VWC2)
+head(SV_VWC2)
+
+#Write the 'SV_VWC2' dataframe to a .dat file with a tab delimiter and save it
+write.table(SV_VWC2, file = "SV_VWC2.dat", sep = "\t", row.names = FALSE, col.names = TRUE)
+
+#Create the plot using ggplot2
+
+# Convert the date strings in column 1 to POSIXct datetime objects
+SV_VWC2[, 1] <- as.POSIXct(SV_VWC2[, 1], format = "%Y-%m-%d %H:%M")
+
+#Choose your desired y-axis limits (and change it manually in line below).
+#y_min <- min(c(SV_VWC2[, 2], SV_VWC2[, 3], SV_VWC2[, 4], SV_VWC2[, 5], SV_VWC2[, 6], SV_VWC2[, 7], SV_VWC2[, 8], SV_VWC2[, 9], SV_VWC2[, 10])), na.rm = TRUE)
+#y_max <- max(c(SV_VWC2[, 2], SV_VWC2[, 3], SV_VWC2[, 4], SV_VWC2[, 5], SV_VWC2[, 6], SV_VWC2[, 7], SV_VWC2[, 8], SV_VWC2[, 9], SV_VWC2[, 10]), na.rm = TRUE)
+
+#Create a plot with timestamp on the x-axis and adjusted y-axis limits (adjust the y_max and y_min as you wish)
+plot(SV_VWC2[, 1], SV_VWC2[, 2], type = 'l', col = 'red', xlab = 'Timestamp', ylab = 'Values',
+     main = 'SV_VWC2 Over Time', ylim = c(0.30, 0.45))
+
+# Add the rest of the series to the same plot
+lines(SV_VWC2[, 1], SV_VWC2[, 3], col = 'blue')
+lines(SV_VWC2[, 1], SV_VWC2[, 4], col = 'green')
+lines(SV_VWC2[, 1], SV_VWC2[, 5], col = 'purple')
+lines(SV_VWC2[, 1], SV_VWC2[, 6], col = 'orange')
+lines(SV_VWC2[, 1], SV_VWC2[, 7], col = 'yellow')
+lines(SV_VWC2[, 1], SV_VWC2[, 8], col = 'brown')
+lines(SV_VWC2[, 1], SV_VWC2[, 9], col = 'lightblue')
+lines(SV_VWC2[, 1], SV_VWC2[, 10], col = 'lightgreen')
+# Add a legend to distinguish the different lines
+legend("bottomright", legend = c("SV_VWC2 5cm", "SV_VWC2 10cm", "SV_VWC2 20cm", "SV_VWC2 30cm", "SV_VWC2 40cm", "SV_VWC2 50cm", "SV_VWC2 60cm", "SV_VWC2 75cm", "SV_VWC2 100cm"),
+       col = c('red', 'blue', 'green', 'purple', 'orange', 'yellow', 'brown', 'lightblue', 'lightgreen'), lty = 1, cex = 0.8)
+
+# Do some basic statistics
+# Assuming SV_VWC2 is your dataset with named columns
+
+# List of column names from the 2nd to the 7th
+columnNames_SV_VWC2 <- names(SV_VWC2)[2:10]
+
+# Calculate mean and SD for each of the specified columns
+means_SV_VWC2 <- sapply(SV_VWC2[, columnNames_SV_VWC2], mean, na.rm = TRUE)
+sds_SV_VWC2 <- sapply(SV_VWC2[, columnNames_SV_VWC2], sd, na.rm = TRUE)
+
+# Create a new dataframe for the results
+results_SV_VWC2 <- data.frame(
+  Mean_SV_VWC2 = means_SV_VWC2,
+  SD_SV_VWC2 = sds_SV_VWC2
+)
+
+# Set the row names of the results dataframe to the column names
+rownames(results_SV_VWC2) <- columnNames_SV_VWC2
+
+# Display the results
+print(results_SV_VWC2)
+
+# make a graph to compare SV_VWC2 in soil profile
+
+# Assuming 'results' dataframe contains the mean and SD information
+# for each of the columns
+
+# Create a bar plot for the mean values
+barplot(results_SV_VWC2$Mean_SV_VWC2, names.arg = rownames(results_SV_VWC2), beside = TRUE,
+        col = 'lightblue', ylim = c(0, max(results_SV_VWC2$Mean_SV_VWC2 + results_SV_VWC2$SD_SV_VWC2)),
+        main = "Mean values with SD error bars", ylab = "Mean values")
+
+# Add error bars for SD
+# Calculate the center position of each bar on the x-axis
+bar_centers_SV_VWC2 <- barplot(results_SV_VWC2$Mean_SV_VWC2, plot = FALSE)
+
+# Add the error bars using the arrows function
+arrows(x0 = bar_centers_SV_VWC2, y0 = results_SV_VWC2$Mean_SV_VWC2 - results_SV_VWC2$SD_SV_VWC2,
+       x1 = bar_centers_SV_VWC2, y1 = results_SV_VWC2$Mean_SV_VWC2 + results_SV_VWC2$SD_SV_VWC2,
+       angle = 90, code = 3, length = 0.1, col = 'darkred')
+
+##Do ANOVA
+##Ensure that you have the reshape2 package installed
+
+##Melt the data frame from wide format to long format for ANOVA
+longSV_VWC2 <- melt(SV_VWC2, id.vars = "TIMESTAMP", measure.vars = colnames(SV_VWC2)[2:10])
+
+##Perform ANOVA
+aov_results_SV_VWC2 <- aov(value ~ variable, data = longSV_VWC2)
+
+##Display the summary of the ANOVA
+summary(aov_results_SV_VWC2)
+
+## Post-hoc test if ANOVA significant
+#if (summary(aov_results_SV_VWC2)[[1]][["Pr(>F)"]][1] < 0.05) {
+  #TukeyHSD(aov_results_SV_VWC2)
+#} else {
+ # print("ANOVA is not significant; post-hoc analysis is not applicable.")
+#}
 
 
-####SV_VWC2###
+#################SV_EC2#############
+
+# Check the structure and head of the 'SV_EC2' dataset
+str(SV_EC2)
+head(SV_EC2)
+
+# Check to see whether data are "as character" or "numeric"
+sapply(SV_EC2[, 2:10], class)
+
+# Convert all columns 2 to 10 to numeric if needed
+SV_EC2[, 2:10] <- sapply(SV_EC2[, 2:10], function(x) as.numeric(as.character(x)))
+
+# Remove rows that contain any NaN values
+
+## First, loop through all elements and convert any "nan" or "NAN" strings to NaN
+#SV_EC2[SV_EC2 == "nan" | SV_EC2 == "NAN"] <- NaN
+## Then, use na.omit() to remove any rows containing NaN values in the dataset
+#SV_EC2 <- na.omit(SV_EC2)
+
+## to exclude rows with any zeros
+#SV_EC2 <- SV_EC2[!apply(SV_EC2 == 0, 1, any), ]
+
+# Check the structure and head of the 'SV_EC2' dataset
+str(SV_EC2)
+head(SV_EC2)
+
+# Write the 'SV_EC2' dataframe to a .dat file with a tab delimiter and save it
+write.table(SV_EC2, file = "SV_EC2.dat", sep = "\t", row.names = FALSE, col.names = TRUE)
+
+# Create the plot using ggplot2
+
+# Convert the date strings in column 1 to POSIXct datetime objects
+SV_EC2[, 1] <- as.POSIXct(SV_EC2[, 1], format = "%Y-%m-%d %H:%M")
+
+# Choose your desired y-axis limits (and change it manually in line below).
+#y_min <- min(c(SV_EC2[, 2], SV_EC2[, 3], SV_EC2[, 4], SV_EC2[, 5], SV_EC2[, 6], SV_EC2[, 7], SV_EC2[, 8], SV_EC2[, 9], SV_EC2[, 10]), na.rm = TRUE)
+#y_max <- max(c(SV_EC2[, 2], SV_EC2[, 3], SV_EC2[, 4], SV_EC2[, 5], SV_EC2[, 6], SV_EC2[, 7], SV_EC2[, 8], SV_EC2[, 9], SV_EC2[, 10]), na.rm = TRUE)
+
+# Create a plot with timestamp on the x-axis and adjusted y-axis limits (adjust the y_max and y_min as you wish)
+plot(SV_EC2[, 1], SV_EC2[, 2], type = 'l', col = 'red', xlab = 'Timestamp', ylab = 'Values',
+     main = 'SV_EC2 Over Time', ylim = c(0.30, 0.45))
+
+# Add the rest of the series to the same plot
+lines(SV_EC2[, 1], SV_EC2[, 3], col = 'blue')
+lines(SV_EC2[, 1], SV_EC2[, 4], col = 'green')
+lines(SV_EC2[, 1], SV_EC2[, 5], col = 'purple')
+lines(SV_EC2[, 1], SV_EC2[, 6], col = 'orange')
+lines(SV_EC2[, 1], SV_EC2[, 7], col = 'yellow')
+lines(SV_EC2[, 1], SV_EC2[, 8], col = 'brown')
+lines(SV_EC2[, 1], SV_EC2[, 9], col = 'lightblue')
+lines(SV_EC2[, 1], SV_EC2[, 10], col = 'lightgreen')
+# Add a legend to distinguish the different lines
+legend("bottomright", legend = c("SV_EC2 5cm", "SV_EC2 10cm", "SV_EC2 20cm", "SV_EC2 30cm", "SV_EC2 40cm", "SV_EC2 50cm", "SV_EC2 60cm", "SV_EC2 75cm", "SV_EC2 100cm"),
+       col = c('red', 'blue', 'green', 'purple', 'orange', 'yellow', 'brown', 'lightblue', 'lightgreen'), lty = 1, cex = 0.8)
+
+# Do some basic statistics
+# Assuming SV_EC2 is your dataset with named columns
+
+# List of column names from the 2nd to the 7th
+columnNames_SV_EC2 <- names(SV_EC2)[2:10]
+
+# Calculate mean and SD for each of the specified columns
+means_SV_EC2 <- sapply(SV_EC2[, columnNames_SV_EC2], mean, na.rm = TRUE)
+sds_SV_EC2 <- sapply(SV_EC2[, columnNames_SV_EC2], sd, na.rm = TRUE)
+
+# Create a new dataframe for the results
+results_SV_EC2 <- data.frame(
+  Mean_SV_EC2 = means_SV_EC2,
+  SD_SV_EC2 = sds_SV_EC2
+)
+
+# Set the row names of the results dataframe to the column names
+rownames(results_SV_EC2) <- columnNames_SV_EC2
+
+# Display the results
+print(results_SV_EC2)
+
+# Make a graph to compare SV_EC2 across paddock
+
+# Assuming 'results' dataframe contains the mean and SD information
+# for each of the columns
+
+# Create a bar plot for the mean values
+barplot(results_SV_EC2$Mean_SV_EC2, names.arg = rownames(results_SV_EC2), beside = TRUE,
+        col = 'lightblue', ylim = c(0, max(results_SV_EC2$Mean_SV_EC2 + results_SV_EC2$SD_SV_EC2)),
+        main = "Mean values with SD error bars", ylab = "Mean values")
+
+# Add error bars for SD
+# Calculate the center position of each bar on the x-axis
+bar_centers_SV_EC2 <- barplot(results_SV_EC2$Mean_SV_EC2, plot = FALSE)
+
+# Add the error bars using the arrows function
+arrows(x0 = bar_centers_SV_EC2, y0 = results_SV_EC2$Mean_SV_EC2 - results_SV_EC2$SD_SV_EC2,
+       x1 = bar_centers_SV_EC2, y1 = results_SV_EC2$Mean_SV_EC2 + results_SV_EC2$SD_SV_EC2,
+       angle = 90, code = 3, length = 0.1, col = 'darkred')
+
+##Do ANOVA
+##Ensure that you have the reshape2 package installed
+
+##Melt the data frame from wide format to long format for ANOVA
+longSV_EC2 <- melt(SV_EC2, id.vars = "TIMESTAMP", measure.vars = colnames(SV_EC2)[2:10])
+
+##Perform ANOVA
+aov_results_SV_EC2 <- aov(value ~ variable, data = longSV_EC2)
+
+##Display the summary of the ANOVA
+summary(aov_results_SV_EC2)
+
+##Post-hoc test if ANOVA significant
+#if (summary(aov_results_SV_EC2)[[1]][["Pr(>F)"]][1] < 0.05) {
+  #TukeyHSD(aov_results_SV_EC2)
+#} else {
+  #print("ANOVA is not significant; post-hoc analysis is not applicable.")
+#}
 
 
-####SV_EC2###
+#################SV_Temp2########
+# Check the structure and head of the 'SV_Temp2' dataset
+str(SV_Temp2)
+head(SV_Temp2)
 
+# Check to see whether data are "as character" or "numeric"
+sapply(SV_Temp2[, 2:10], class)
 
-####SV_Temp2###
+# Convert all columns 2 to 10 to numeric if needed
+SV_Temp2[, 2:10] <- sapply(SV_Temp2[, 2:10], function(x) as.numeric(as.character(x)))
+
+# Remove rows that contain any NaN values
+
+## First, loop through all elements and convert any "nan" or "NAN" strings to NaN
+#SV_Temp2[SV_Temp2 == "nan" | SV_Temp2 == "NAN"] <- NaN
+## Then, use na.omit() to remove any rows containing NaN values in the dataset
+#SV_Temp2 <- na.omit(SV_Temp2)
+
+## to exclude rows with any zeros
+#SV_Temp2 <- SV_Temp2[!apply(SV_Temp2 == 0, 1, any), ]
+
+# Check the structure and head of the 'SV_Temp2' dataset
+str(SV_Temp2)
+head(SV_Temp2)
+
+# Write the 'SV_Temp2' dataframe to a .dat file with a tab delimiter and save it
+write.table(SV_Temp2, file = "SV_Temp2.dat", sep = "\t", row.names = FALSE, col.names = TRUE)
+
+# Create the plot using ggplot2
+
+# Convert the date strings in column 1 to POSIXct datetime objects
+SV_Temp2[, 1] <- as.POSIXct(SV_Temp2[, 1], format = "%Y-%m-%d %H:%M")
+
+# Create a plot with timestamp on the x-axis
+plot(SV_Temp2[, 1], SV_Temp2[, 2], type = 'l', col = 'red', xlab = 'Timestamp', ylab = 'Values',
+     main = 'SV_Temp2 Over Time', ylim = c(0.30, 0.45))
+
+# Add the rest of the series to the same plot
+lines(SV_Temp2[, 1], SV_Temp2[, 3], col = 'blue')
+lines(SV_Temp2[, 1], SV_Temp2[, 4], col = 'green')
+lines(SV_Temp2[, 1], SV_Temp2[, 5], col = 'purple')
+lines(SV_Temp2[, 1], SV_Temp2[, 6], col = 'orange')
+lines(SV_Temp2[, 1], SV_Temp2[, 7], col = 'yellow')
+lines(SV_Temp2[, 1], SV_Temp2[, 8], col = 'brown')
+lines(SV_Temp2[, 1], SV_Temp2[, 9], col = 'lightblue')
+lines(SV_Temp2[, 1], SV_Temp2[, 10], col = 'lightgreen')
+# Add a legend to distinguish the different lines
+legend("bottomright", legend = c("SV_Temp2 5cm", "SV_Temp2 10cm", "SV_Temp2 20cm", "SV_Temp2 30cm", "SV_Temp2 40cm", "SV_Temp2 50cm", "SV_Temp2 60cm", "SV_Temp2 75cm", "SV_Temp2 100cm"),
+       col = c('red', 'blue', 'green', 'purple', 'orange', 'yellow', 'brown', 'lightblue', 'lightgreen'), lty = 1, cex = 0.8)
+
+# Do some basic statistics
+# Assuming SV_Temp2 is your dataset with named columns
+
+# List of column names from the 2nd to the 7th
+columnNames_SV_Temp2 <- names(SV_Temp2)[2:10]
+
+# Calculate mean and SD for each of the specified columns
+means_SV_Temp2 <- sapply(SV_Temp2[, columnNames_SV_Temp2], mean, na.rm = TRUE)
+sds_SV_Temp2 <- sapply(SV_Temp2[, columnNames_SV_Temp2], sd, na.rm = TRUE)
+
+# Create a new dataframe for the results
+results_SV_Temp2 <- data.frame(
+  Mean_SV_Temp2 = means_SV_Temp2,
+  SD_SV_Temp2 = sds_SV_Temp2
+)
+
+# Set the row names of the results dataframe to the column names
+rownames(results_SV_Temp2) <- columnNames_SV_Temp2
+
+# Display the results
+print(results_SV_Temp2)
+
+# Make a graph to compare SV_Temp2 across paddock
+
+# Assuming 'results' dataframe contains the mean and SD information
+# for each of the columns
+
+# Create a bar plot for the mean values
+barplot(results_SV_Temp2$Mean_SV_Temp2, names.arg = rownames(results_SV_Temp2), beside = TRUE,
+        col = 'lightblue', ylim = c(0, max(results_SV_Temp2$Mean_SV_Temp2 + results_SV_Temp2$SD_SV_Temp2)),
+        main = "Mean values with SD error bars", ylab = "Mean values")
+
+# Add error bars for SD
+# Calculate the center position of each bar on the x-axis
+bar_centers_SV_Temp2 <- barplot(results_SV_Temp2$Mean_SV_Temp2, plot = FALSE)
+
+# Add the error bars using the arrows function
+arrows(x0 = bar_centers_SV_Temp2, y0 = results_SV_Temp2$Mean_SV_Temp2 - results_SV_Temp2$SD_SV_Temp2,
+       x1 = bar_centers_SV_Temp2, y1 = results_SV_Temp2$Mean_SV_Temp2 + results_SV_Temp2$SD_SV_Temp2,
+       angle = 90, code = 3, length = 0.1, col = 'darkred')
+
+##Do ANOVA
+##Ensure that you have the reshape2 package installed
+
+##Melt the data frame from wide format to long format for ANOVA
+longSV_Temp2 <- melt(SV_Temp2, id.vars = "TIMESTAMP", measure.vars = colnames(SV_Temp2)[2:10])
+
+##Perform ANOVA
+aov_results_SV_Temp2 <- aov(value ~ variable, data = longSV_Temp2)
+
+##Display the summary of the ANOVA
+summary(aov_results_SV_Temp2)
+
+##Post-hoc test if ANOVA significant
+#if (summary(aov_results_SV_Temp2)[[1]][["Pr(>F)"]][1] < 0.05) {
+  #TukeyHSD(aov_results_SV_Temp2)
+#} else {
+  #print("ANOVA is not significant; post-hoc analysis is not applicable.")
+#}
+
 
 
 #################################### Treatment 3###############################
@@ -844,9 +1509,9 @@ head(SoilData3)
 str(SoilData3)
 
 # Create new data frame 'EC2' using the column indices
-VWC3 <- SoilData2[, c(1, 3, 6, 9, 12, 15, 18)]
-EC3 <- SoilData2[, c(1, 4, 7, 10, 13, 16, 19)]
-Temp3 <- SoilData2[, c(1, 5, 8, 11, 14, 17, 20)]
+VWC3 <- SoilData3[, c(1, 3, 6, 9, 12, 15, 18)]
+EC3 <- SoilData3[, c(1, 4, 7, 10, 13, 16, 19)]
+Temp3 <- SoilData3[, c(1, 5, 8, 11, 14, 17, 20)]
 
 SV_VWC3 <- SoilData3[, c(1, 21, 25, 29, 33, 37, 41, 45, 49, 53)]
 SV_EC3 <- SoilData3[, c(1, 24, 28, 32, 36, 40, 44, 48, 52, 56)]
@@ -860,7 +1525,7 @@ SV_Temp3 <- SoilData3[, c(1, 23, 27, 31, 35, 39, 43, 47, 51, 55)]
 
 
 
-##################VWC3 ######
+###########VWC3 ######
 
 # Check the structure and head of the 'VWC3' dataset
 str(VWC3)
@@ -970,7 +1635,7 @@ if (summary(aov_results_VWC3)[[1]][["Pr(>F)"]][1] < 0.05) {
 
 
 
-##################EC3######
+###########EC3######
 
 
 # Check the structure and head of the 'EC3' dataset
@@ -1094,7 +1759,7 @@ if (summary(aov_results_EC3)[[1]][["Pr(>F)"]][1] < 0.05) {
 
 
 
-#################Temp3######
+###########Temp3######
 
 # Check the structure and head of the 'Temp3' dataset
 str(Temp3)
@@ -1208,16 +1873,357 @@ if (summary(aov_results_Temp3)[[1]][["Pr(>F)"]][1] < 0.05) {
   print("ANOVA is not significant; post-hoc analysis is not applicable.")
 }
 
-####SV_VWC3###
+##################SV_VWC3##########
+# Check the structure and head of the 'SV_VWC3' dataset
+str(SV_VWC3)
+head(SV_VWC3)
+
+# Check to see whether data are "as character" or "numeric"
+sapply(SV_VWC3[, 2:10], class)
+
+# Convert all columns 2 to 10 to numeric if needed
+SV_VWC3[, 2:10] <- sapply(SV_VWC3[, 2:10], function(x) as.numeric(as.character(x)))
+
+# Remove rows that contain any NaN values
+
+##First, loop through all elements and convert any "nan" or "NAN" strings to NaN
+#SV_VWC3[SV_VWC3 == "nan" | SV_VWC3 == "NAN"] <- NaN
+##Then, use na.omit() to remove any rows containing NaN values in the dataset
+#SV_VWC3 <- na.omit(SV_VWC3)
+
+# to exclude rows with any zeros
+#SV_VWC3 <- SV_VWC3[!apply(SV_VWC3 == 0, 1, any), ]
+
+# Check the structure and head of the 'SV_VWC3' dataset
+str(SV_VWC3)
+head(SV_VWC3)
+
+#Write the 'SV_VWC3' dataframe to a .dat file with a tab delimiter and save it
+write.table(SV_VWC3, file = "SV_VWC3.dat", sep = "\t", row.names = FALSE, col.names = TRUE)
+
+#Create the plot using ggplot2
+
+# Convert the date strings in column 1 to POSIXct datetime objects
+SV_VWC3[, 1] <- as.POSIXct(SV_VWC3[, 1], format = "%Y-%m-%d %H:%M")
+
+#Choose your desired y-axis limits (and change it manually in line below).
+#y_min <- min(c(SV_VWC3[, 2], SV_VWC3[, 3], SV_VWC3[, 4], SV_VWC3[, 5], SV_VWC3[, 6], SV_VWC3[, 7], SV_VWC3[, 8], SV_VWC3[, 9], SV_VWC3[, 10])), na.rm = TRUE)
+#y_max <- max(c(SV_VWC3[, 2], SV_VWC3[, 3], SV_VWC3[, 4], SV_VWC3[, 5], SV_VWC3[, 6], SV_VWC3[, 7], SV_VWC3[, 8], SV_VWC3[, 9], SV_VWC3[, 10]), na.rm = TRUE)
+
+#Create a plot with timestamp on the x-axis and adjusted y-axis limits (adjust the y_max and y_min as you wish)
+plot(SV_VWC3[, 1], SV_VWC3[, 2], type = 'l', col = 'red', xlab = 'Timestamp', ylab = 'Values',
+     main = 'SV_VWC3 Over Time', ylim = c(0.30, 0.45))
+
+# Add the rest of the series to the same plot
+lines(SV_VWC3[, 1], SV_VWC3[, 3], col = 'blue')
+lines(SV_VWC3[, 1], SV_VWC3[, 4], col = 'green')
+lines(SV_VWC3[, 1], SV_VWC3[, 5], col = 'purple')
+lines(SV_VWC3[, 1], SV_VWC3[, 6], col = 'orange')
+lines(SV_VWC3[, 1], SV_VWC3[, 7], col = 'yellow')
+lines(SV_VWC3[, 1], SV_VWC3[, 8], col = 'brown')
+lines(SV_VWC3[, 1], SV_VWC3[, 9], col = 'lightblue')
+lines(SV_VWC3[, 1], SV_VWC3[, 10], col = 'lightgreen')
+
+# Add a legend to distinguish the different lines
+legend("bottomright", legend = c("SV_VWC3 5cm", "SV_VWC3 10cm", "SV_VWC3 20cm", "SV_VWC3 30cm", "SV_VWC3 40cm", "SV_VWC3 50cm", "SV_VWC3 60cm", "SV_VWC3 75cm", "SV_VWC3 100cm"),
+       col = c('red', 'blue', 'green', 'purple', 'orange', 'yellow', 'brown', 'lightblue', 'lightgreen'), lty = 1, cex = 0.8)
+
+# Do some basic statistics
+# Assuming SV_VWC3 is your dataset with named columns
+
+# List of column names from the 2nd to the 7th
+columnNames_SV_VWC3 <- names(SV_VWC3)[2:10]
+
+# Calculate mean and SD for each of the specified columns
+means_SV_VWC3 <- sapply(SV_VWC3[, columnNames_SV_VWC3], mean, na.rm = TRUE)
+sds_SV_VWC3 <- sapply(SV_VWC3[, columnNames_SV_VWC3], sd, na.rm = TRUE)
+
+# Create a new dataframe for the results
+results_SV_VWC3 <- data.frame(
+  Mean_SV_VWC3 = means_SV_VWC3,
+  SD_SV_VWC3 = sds_SV_VWC3
+)
+
+# Set the row names of the results dataframe to the column names
+rownames(results_SV_VWC3) <- columnNames_SV_VWC3
+
+# Display the results
+print(results_SV_VWC3)
+
+# make a graph to compare SV_VWC3 in soil profile
+
+# Assuming 'results' dataframe contains the mean and SD information
+# for each of the columns
+
+# Create a bar plot for the mean values
+barplot(results_SV_VWC3$Mean_SV_VWC3, names.arg = rownames(results_SV_VWC3), beside = TRUE,
+        col = 'lightblue', ylim = c(0, max(results_SV_VWC3$Mean_SV_VWC3 + results_SV_VWC3$SD_SV_VWC3)),
+        main = "Mean values with SD error bars", ylab = "Mean values")
+
+# Add error bars for SD
+# Calculate the center position of each bar on the x-axis
+bar_centers_SV_VWC3 <- barplot(results_SV_VWC3$Mean_SV_VWC3, plot = FALSE)
+
+# Add the error bars using the arrows function
+arrows(x0 = bar_centers_SV_VWC3, y0 = results_SV_VWC3$Mean_SV_VWC3 - results_SV_VWC3$SD_SV_VWC3,
+       x1 = bar_centers_SV_VWC3, y1 = results_SV_VWC3$Mean_SV_VWC3 + results_SV_VWC3$SD_SV_VWC3,
+       angle = 90, code = 3, length = 0.1, col = 'darkred')
+
+# Do ANOVA
+# Ensure that you have the reshape2 package installed
+
+#Melt the data frame from wide format to long format for ANOVA
+longSV_VWC3 <- melt(SV_VWC3, id.vars = "TIMESTAMP", measure.vars = colnames(SV_VWC3)[2:10])
+
+# Perform ANOVA
+aov_results_SV_VWC3 <- aov(value ~ variable, data = longSV_VWC3)
+
+# Display the summary of the ANOVA
+summary(aov_results_SV_VWC3)
+
+##Post-hoc test if ANOVA significant
+#if (summary(aov_results_SV_VWC3)[[1]][["Pr(>F)"]][1] < 0.05) {
+  #TukeyHSD(aov_results_SV_VWC3)
+#} else {
+ # print("ANOVA is not significant; post-hoc analysis is not applicable.")
+#}
 
 
-####SV_EC3###
+
+##################SV_EC3##########
+# Check the structure and head of the 'SV_EC3' dataset
+str(SV_EC3)
+head(SV_EC3)
+
+# Check to see whether data are "as character" or "numeric"
+sapply(SV_EC3[, 2:10], class)
+
+# Convert all columns 2 to 10 to numeric if needed
+SV_EC3[, 2:10] <- sapply(SV_EC3[, 2:10], function(x) as.numeric(as.character(x)))
+
+# Remove rows that contain any NaN values
+
+##First, loop through all elements and convert any "nan" or "NAN" strings to NaN
+#SV_EC3[SV_EC3 == "nan" | SV_EC3 == "NAN"] <- NaN
+##Then, use na.omit() to remove any rows containing NaN values in the dataset
+#SV_EC3 <- na.omit(SV_EC3)
+
+# to exclude rows with any zeros
+#SV_EC3 <- SV_EC3[!apply(SV_EC3 == 0, 1, any), ]
+
+# Check the structure and head of the 'SV_EC3' dataset
+str(SV_EC3)
+head(SV_EC3)
+
+#Write the 'SV_EC3' dataframe to a .dat file with a tab delimiter and save it
+write.table(SV_EC3, file = "SV_EC3.dat", sep = "\t", row.names = FALSE, col.names = TRUE)
+
+#Create the plot using ggplot2
+
+# Convert the date strings in column 1 to POSIXct datetime objects
+SV_EC3[, 1] <- as.POSIXct(SV_EC3[, 1], format = "%Y-%m-%d %H:%M")
+
+#Choose your desired y-axis limits (and change it manually in line below).
+#y_min <- min(c(SV_EC3[, 2], SV_EC3[, 3], SV_EC3[, 4], SV_EC3[, 5], SV_EC3[, 6], SV_EC3[, 7], SV_EC3[, 8], SV_EC3[, 9], SV_EC3[, 10])), na.rm = TRUE)
+#y_max <- max(c(SV_EC3[, 2], SV_EC3[, 3], SV_EC3[, 4], SV_EC3[, 5], SV_EC3[, 6], SV_EC3[, 7], SV_EC3[, 8], SV_EC3[, 9], SV_EC3[, 10]), na.rm = TRUE)
+
+#Create a plot with timestamp on the x-axis and adjusted y-axis limits (adjust the y_max and y_min as you wish)
+plot(SV_EC3[, 1], SV_EC3[, 2], type = 'l', col = 'red', xlab = 'Timestamp', ylab = 'Values',
+     main = 'SV_EC3 Over Time', ylim = c(0.30, 0.45))
+
+# Add the rest of the series to the same plot
+lines(SV_EC3[, 1], SV_EC3[, 3], col = 'blue')
+lines(SV_EC3[, 1], SV_EC3[, 4], col = 'green')
+lines(SV_EC3[, 1], SV_EC3[, 5], col = 'purple')
+lines(SV_EC3[, 1], SV_EC3[, 6], col = 'orange')
+lines(SV_EC3[, 1], SV_EC3[, 7], col = 'yellow')
+lines(SV_EC3[, 1], SV_EC3[, 8], col = 'brown')
+lines(SV_EC3[, 1], SV_EC3[, 9], col = 'lightblue')
+lines(SV_EC3[, 1], SV_EC3[, 10], col = 'lightgreen')
+
+# Add a legend to distinguish the different lines
+legend("bottomright", legend = c("SV_EC3 5cm", "SV_EC3 10cm", "SV_EC3 20cm", "SV_EC3 30cm", "SV_EC3 40cm", "SV_EC3 50cm", "SV_EC3 60cm", "SV_EC3 75cm", "SV_EC3 100cm"),
+       col = c('red', 'blue', 'green', 'purple', 'orange', 'yellow', 'brown', 'lightblue', 'lightgreen'), lty = 1, cex = 0.8)
+
+# Do some basic statistics
+# Assuming SV_EC3 is your dataset with named columns
+
+# List of column names from the 2nd to the 7th
+columnNames_SV_EC3 <- names(SV_EC3)[2:10]
+
+# Calculate mean and SD for each of the specified columns
+means_SV_EC3 <- sapply(SV_EC3[, columnNames_SV_EC3], mean, na.rm = TRUE)
+sds_SV_EC3 <- sapply(SV_EC3[, columnNames_SV_EC3], sd, na.rm = TRUE)
+
+# Create a new dataframe for the results
+results_SV_EC3 <- data.frame(
+  Mean_SV_EC3 = means_SV_EC3,
+  SD_SV_EC3 = sds_SV_EC3
+)
+
+# Set the row names of the results dataframe to the column names
+rownames(results_SV_EC3) <- columnNames_SV_EC3
+
+# Display the results
+print(results_SV_EC3)
+
+# make a graph to compare SV_EC3 in soil profile
+
+# Assuming 'results' dataframe contains the mean and SD information
+# for each of the columns
+
+# Create a bar plot for the mean values
+barplot(results_SV_EC3$Mean_SV_EC3, names.arg = rownames(results_SV_EC3), beside = TRUE,
+        col = 'lightblue', ylim = c(0, max(results_SV_EC3$Mean_SV_EC3 + results_SV_EC3$SD_SV_EC3)),
+        main = "Mean values with SD error bars", ylab = "Mean values")
+
+# Add error bars for SD
+# Calculate the center position of each bar on the x-axis
+bar_centers_SV_EC3 <- barplot(results_SV_EC3$Mean_SV_EC3, plot = FALSE)
+
+# Add the error bars using the arrows function
+arrows(x0 = bar_centers_SV_EC3, y0 = results_SV_EC3$Mean_SV_EC3 - results_SV_EC3$SD_SV_EC3,
+       x1 = bar_centers_SV_EC3, y1 = results_SV_EC3$Mean_SV_EC3 + results_SV_EC3$SD_SV_EC3,
+       angle = 90, code = 3, length = 0.1, col = 'darkred')
+
+# Do ANOVA
+# Ensure that you have the reshape2 package installed
+
+#Melt the data frame from wide format to long format for ANOVA
+longSV_EC3 <- melt(SV_EC3, id.vars = "TIMESTAMP", measure.vars = colnames(SV_EC3)[2:10])
+
+# Perform ANOVA
+aov_results_SV_EC3 <- aov(value ~ variable, data = longSV_EC3)
+
+# Display the summary of the ANOVA
+summary(aov_results_SV_EC3)
+
+##Post-hoc test if ANOVA significant
+#if (summary(aov_results_SV_EC3)[[1]][["Pr(>F)"]][1] < 0.05) {
+  #TukeyHSD(aov_results_SV_EC3)
+#} else {
+  #print("ANOVA is not significant; post-hoc analysis is not applicable.")
+#}
 
 
-####SV_Temp3###
+
+##############SV_Temp3##########
+str(SV_Temp3)
+head(SV_Temp3)
+
+# Check to see whether data are "as character" or "numeric"
+sapply(SV_Temp3[, 2:10], class)
+
+# Convert all columns 2 to 10 to numeric if needed
+SV_Temp3[, 2:10] <- sapply(SV_Temp3[, 2:10], function(x) as.numeric(as.character(x)))
+
+# Remove rows that contain any NaN values
+
+##First, loop through all elements and convert any "nan" or "NAN" strings to NaN
+#SV_Temp3[SV_Temp3 == "nan" | SV_Temp3 == "NAN"] <- NaN
+##Then, use na.omit() to remove any rows containing NaN values in the dataset
+#SV_Temp3 <- na.omit(SV_Temp3)
+
+# to exclude rows with any zeros
+#SV_Temp3 <- SV_Temp3[!apply(SV_Temp3 == 0, 1, any), ]
+
+# Check the structure and head of the 'SV_Temp3' dataset
+str(SV_Temp3)
+head(SV_Temp3)
+
+#Write the 'SV_Temp3' dataframe to a .dat file with a tab delimiter and save it
+write.table(SV_Temp3, file = "SV_Temp3.dat", sep = "\t", row.names = FALSE, col.names = TRUE)
+
+#Create the plot using ggplot2
+
+# Convert the date strings in column 1 to POSIXct datetime objects
+SV_Temp3[, 1] <- as.POSIXct(SV_Temp3[, 1], format = "%Y-%m-%d %H:%M")
+
+#Choose your desired y-axis limits (and change it manually in line below).
+#y_min <- min(c(SV_Temp3[, 2], SV_Temp3[, 3], SV_Temp3[, 4], SV_Temp3[, 5], SV_Temp3[, 6], SV_Temp3[, 7], SV_Temp3[, 8], SV_Temp3[, 9], SV_Temp3[, 10])), na.rm = TRUE)
+#y_max <- max(c(SV_Temp3[, 2], SV_Temp3[, 3], SV_Temp3[, 4], SV_Temp3[, 5], SV_Temp3[, 6], SV_Temp3[, 7], SV_Temp3[, 8], SV_Temp3[, 9], SV_Temp3[, 10]), na.rm = TRUE)
+
+#Create a plot with timestamp on the x-axis and adjusted y-axis limits (adjust the y_max and y_min as you wish)
+plot(SV_Temp3[, 1], SV_Temp3[, 2], type = 'l', col = 'red', xlab = 'Timestamp', ylab = 'Values',
+     main = 'SV_Temp3 Over Time', ylim = c(0.30, 0.45))
+
+# Add the rest of the series to the same plot
+lines(SV_Temp3[, 1], SV_Temp3[, 3], col = 'blue')
+lines(SV_Temp3[, 1], SV_Temp3[, 4], col = 'green')
+lines(SV_Temp3[, 1], SV_Temp3[, 5], col = 'purple')
+lines(SV_Temp3[, 1], SV_Temp3[, 6], col = 'orange')
+lines(SV_Temp3[, 1], SV_Temp3[, 7], col = 'yellow')
+lines(SV_Temp3[, 1], SV_Temp3[, 8], col = 'brown')
+lines(SV_Temp3[, 1], SV_Temp3[, 9], col = 'lightblue')
+lines(SV_Temp3[, 1], SV_Temp3[, 10], col = 'lightgreen')
+
+# Add a legend to distinguish the different lines
+legend("bottomright", legend = c("SV_Temp3 5cm", "SV_Temp3 10cm", "SV_Temp3 20cm", "SV_Temp3 30cm", "SV_Temp3 40cm", "SV_Temp3 50cm", "SV_Temp3 60cm", "SV_Temp3 75cm", "SV_Temp3 100cm"),
+       col = c('red', 'blue', 'green', 'purple', 'orange', 'yellow', 'brown', 'lightblue', 'lightgreen'), lty = 1, cex = 0.8)
+
+# Do some basic statistics
+# Assuming SV_Temp3 is your dataset with named columns
+
+# List of column names from the 2nd to the 7th
+columnNames_SV_Temp3 <- names(SV_Temp3)[2:10]
+
+# Calculate mean and SD for each of the specified columns
+means_SV_Temp3 <- sapply(SV_Temp3[, columnNames_SV_Temp3], mean, na.rm = TRUE)
+sds_SV_Temp3 <- sapply(SV_Temp3[, columnNames_SV_Temp3], sd, na.rm = TRUE)
+
+# Create a new dataframe for the results
+results_SV_Temp3 <- data.frame(
+  Mean_SV_Temp3 = means_SV_Temp3,
+  SD_SV_Temp3 = sds_SV_Temp3
+)
+
+# Set the row names of the results dataframe to the column names
+rownames(results_SV_Temp3) <- columnNames_SV_Temp3
+
+# Display the results
+print(results_SV_Temp3)
+
+# make a graph to compare SV_Temp3 in soil profile
+
+# Assuming 'results' dataframe contains the mean and SD information
+# for each of the columns
+
+# Create a bar plot for the mean values
+barplot(results_SV_Temp3$Mean_SV_Temp3, names.arg = rownames(results_SV_Temp3), beside = TRUE,
+        col = 'lightblue', ylim = c(0, max(results_SV_Temp3$Mean_SV_Temp3 + results_SV_Temp3$SD_SV_Temp3)),
+        main = "Mean values with SD error bars", ylab = "Mean values")
+
+# Add error bars for SD
+# Calculate the center position of each bar on the x-axis
+bar_centers_SV_Temp3 <- barplot(results_SV_Temp3$Mean_SV_Temp3, plot = FALSE)
+
+# Add the error bars using the arrows function
+arrows(x0 = bar_centers_SV_Temp3, y0 = results_SV_Temp3$Mean_SV_Temp3 - results_SV_Temp3$SD_SV_Temp3,
+       x1 = bar_centers_SV_Temp3, y1 = results_SV_Temp3$Mean_SV_Temp3 + results_SV_Temp3$SD_SV_Temp3,
+       angle = 90, code = 3, length = 0.1, col = 'darkred')
+
+# Do ANOVA
+# Ensure that you have the reshape2 package installed
+
+#Melt the data frame from wide format to long format for ANOVA
+longSV_Temp3 <- melt(SV_Temp3, id.vars = "TIMESTAMP", measure.vars = colnames(SV_Temp3)[2:10])
+
+# Perform ANOVA
+aov_results_SV_Temp3 <- aov(value ~ variable, data = longSV_Temp3)
+
+# Display the summary of the ANOVA
+summary(aov_results_SV_Temp3)
+
+# Post-hoc test if ANOVA significant
+#if (summary(aov_results_SV_Temp3)[[1]][["Pr(>F)"]][1] < 0.05) {
+  #TukeyHSD(aov_results_SV_Temp3)
+#} else {
+ # print("ANOVA is not significant; post-hoc analysis is not applicable.")
+#}
 
 
-############################ Lysimeter Data Processing##########################
+
+################################################### Lysimeter Data Processing##########################
 
 
 ###################################  treatment 1################
@@ -1258,7 +2264,7 @@ Lys_EC <- LysData[, c(1, 6, 12, 18, 24, 30, 36)]
 #Lys_EC <- LysData[, 1:6]
 
 
-#############Lys_mod_depth ###########
+#############Lys1_mod_depth ###########
 
 # Check the structure and head of the 'Lys_mod_depth' dataset
 str(Lys_mod_depth)
@@ -1285,7 +2291,7 @@ str(Lys_mod_depth)
 head(Lys_mod_depth)
 
 #Write the 'Lys_mod_depth' dataframe to a .dat file with a tab delimiter and save it
-write.table(Lys_mod_depth, file = "Lys_mod_depth.dat", sep = "\t", row.names = FALSE, col.names = TRUE)
+write.table(Lys_mod_depth, file = "Lys1_mod_depth.dat", sep = "\t", row.names = FALSE, col.names = TRUE)
 
 
 
@@ -1378,7 +2384,7 @@ if (summary(aov_results_Lys_mod_depth)[[1]][["Pr(>F)"]][1] < 0.05) {
 
 
 
-############ Lys_Temp ######
+############ Lys1_Temp ######
 
 # Check the structure and head of the 'Lys_Temp' dataset
 str(Lys_Temp)
@@ -1406,7 +2412,7 @@ str(Lys_Temp)
 head(Lys_Temp)
 
 # Write the 'Lys_Temp' dataframe to a .dat file with a tab delimiter and save it
-write.table(Lys_Temp, file = "Lys_Temp.dat", sep = "\t", row.names = FALSE, col.names = TRUE)
+write.table(Lys_Temp, file = "Lys1_Temp.dat", sep = "\t", row.names = FALSE, col.names = TRUE)
 
 # Create the plot using ggplot2
 
@@ -1496,7 +2502,7 @@ if (summary(aov_results_Lys_Temp)[[1]][["Pr(>F)"]][1] < 0.05) {
 
 
 
-#############Lys_EC#########
+#############Lys1_EC#########
 
 # Check the structure and head of the 'Lys_EC' dataset
 str(Lys_EC)
@@ -1523,7 +2529,7 @@ str(Lys_EC)
 head(Lys_EC)
 
 #Write the 'Lys_EC' dataframe to a .dat file with a tab delimiter and save it
-write.table(Lys_EC, file = "Lys_EC.dat", sep = "\t", row.names = FALSE, col.names = TRUE)
+write.table(Lys_EC, file = "Lys1_EC.dat", sep = "\t", row.names = FALSE, col.names = TRUE)
 
 #Create the plot using ggplot2
 
