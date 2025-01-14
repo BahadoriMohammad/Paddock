@@ -9,6 +9,7 @@
 
 ####################################################Soil Data Processing########################################
 
+
 ###################################  Treatment 1#####################################
 
 #uploading soil data from .dat file
@@ -754,6 +755,7 @@ summary(aov_results_SV_Temp)
 
 
 
+
 ###################################  Treatment 2############################
 
 #uploading soil data from .dat file
@@ -1482,6 +1484,7 @@ summary(aov_results_SV_Temp2)
 
 
 
+
 #################################### Treatment 3###############################
 
 
@@ -2107,7 +2110,7 @@ summary(aov_results_SV_EC3)
 
 
 
-##############SV_Temp3##########
+##################SV_Temp3##########
 str(SV_Temp3)
 head(SV_Temp3)
 
@@ -2223,10 +2226,12 @@ summary(aov_results_SV_Temp3)
 
 
 
+
 ################################################### Lysimeter Data Processing##########################
 
 
-###################################  treatment 1################
+
+###################################  Treatment 1################
 
 #uploading Lysimeter data from .dat file
 #Read the "Ross T1_LysimeterData.dat" file without headers
@@ -2618,7 +2623,8 @@ if (summary(aov_results_Lys_EC)[[1]][["Pr(>F)"]][1] < 0.05) {
 
 
 
-##################################  treatment 2################
+
+##################################  Treatment 2################
 
 #uploading Lysimeter data from .dat file
 #Read the "Ross T2_LysimeterData.dat" file without headers
@@ -2999,7 +3005,8 @@ if (summary(aov_results_Lys2_EC)[[1]][["Pr(>F)"]][1] < 0.05) {
 
 
 
-#################################   treatment  3  ################
+
+#################################   Treatment  3  ################
 
 
 #Read the "Ross T3_LysimeterData.dat" file without headers
@@ -3380,6 +3387,10 @@ if (summary(aov_results_Lys3_EC)[[1]][["Pr(>F)"]][1] < 0.05) {
 
 
 #            Cheers :) Mohammad
+
+
+
+
 
 
 
