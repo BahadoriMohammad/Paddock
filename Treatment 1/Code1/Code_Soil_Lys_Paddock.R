@@ -1,13 +1,14 @@
 #Author Mohammad Bahadori
 #codes for Paddock Soil and Lysimeter Data Processing
 
-#Psckages to install/call
-#install.packages("ggplot2")
-#install.packages("reshape2")
-#library(ggplot2)
-#library(reshape2)
+####Packages to install####
+install.packages("ggplot2")
+install.packages("reshape2")
+###Packages to call####
+library(ggplot2)
+library(reshape2)
 
-####################################################Soil Data Processing########################################
+#################################################### Soil Data Processing########################################
 
 
 ###################################  Treatment 1#####################################
@@ -73,7 +74,7 @@ VWC[VWC == "nan" | VWC == "NAN"] <- NA
 VWC <- na.omit(VWC)
 
 # to exclude rows with any zeros
-WVWC <- VWC[!apply(VWC == 0, 1, any), ]
+VWC <- VWC[!apply(VWC == 0, 1, any), ]
 
 # Check the structure and head of the 'VWCp' dataset
 str(VWC)
