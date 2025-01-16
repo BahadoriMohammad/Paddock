@@ -835,7 +835,7 @@ VWC2[, 1] <- as.POSIXct(VWC2[, 1], format = "%Y-%m-%d %H:%M")
 
 #Create a plot with timestamp on the x-axis and adjusted y-axis limits (adjust the y_max and y_min as you wish)
 plot(VWC2[, 1], VWC2[, 2], type = 'l', col = 'red', xlab = 'Timestamp', ylab = 'Values',
-     main = 'VWC2 Over Time', ylim = c(0.30, 0.45))
+     main = 'VWC2 Over Time', ylim = c(0.2, 0.5))
 
 # Add the rest of the series to the same plot
 lines(VWC2[, 1], VWC2[, 3], col = 'blue')
@@ -3080,8 +3080,8 @@ write.table(Lys3_mod_depth, file = "Lys3_mod_depth.dat", sep = "\t", row.names =
 Lys3_mod_depth[, 1] <- as.POSIXct(Lys3_mod_depth[, 1], format = "%Y-%m-%d %H:%M")
 
 # Choose your desired y-axis limits (and change it manually in line below).
-# y_min <- min(c(Lys3_mod_depth[, 2], Lys3_mod_depth[, 3], Lys3_mod_depth[, 4], Lys3_mod_depth[, 5], Lys3_mod_depth[, 6], Lys3_mod_depth[, 7]), na.rm = TRUE)
-# y_max <- max(c(Lys3_mod_depth[, 2], Lys3_mod_depth[, 3], Lys3_mod_depth[, 4], Lys3_mod_depth[, 5], Lys3_mod_depth[, 6], Lys3_mod_depth[, 7]), na.rm = TRUE)
+ #y_min <- min(c(Lys3_mod_depth[, 2], Lys3_mod_depth[, 3], Lys3_mod_depth[, 4], Lys3_mod_depth[, 5], Lys3_mod_depth[, 6], Lys3_mod_depth[, 7]), na.rm = TRUE)
+ #y_max <- max(c(Lys3_mod_depth[, 2], Lys3_mod_depth[, 3], Lys3_mod_depth[, 4], Lys3_mod_depth[, 5], Lys3_mod_depth[, 6], Lys3_mod_depth[, 7]), na.rm = TRUE)
 
 # Create a plot with timestamp on the x-axis and adjusted y-axis limits (adjust the y_max and y_min as you wish)
 plot(Lys3_mod_depth[, 1], Lys3_mod_depth[, 2], type = 'l', col = 'red', xlab = 'Timestamp', ylab = 'Values',
