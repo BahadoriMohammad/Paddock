@@ -516,11 +516,11 @@ aov_results_SV_VWC <- aov(value ~ variable, data = longSV_VWC)
 summary(aov_results_SV_VWC)
 
 ##Post-hoc test if ANOVA significant
-#if (summary(aov_results_SV_VWC)[[1]][["Pr(>F)"]][1] < 0.05) {
- # TukeyHSD(aov_results_SV_VWC)
-#} else {
-  #print("ANOVA is not significant; post-hoc analysis is not applicable.")
-#}
+if (summary(aov_results_SV_VWC)[[1]][["Pr(>F)"]][1] < 0.05) {
+ TukeyHSD(aov_results_SV_VWC)
+} else {
+  print("ANOVA is not significant; post-hoc analysis is not applicable.")
+}
 
 
 
@@ -632,11 +632,11 @@ aov_results_SV_EC <- aov(value ~ variable, data = longSV_EC)
 summary(aov_results_SV_EC)
 
 ##Post-hoc test if ANOVA significant
-#if (summary(aov_results_SV_EC)[[1]][["Pr(>F)"]][1] < 0.05) {
-  #TukeyHSD(aov_results_SV_EC)
-#} else {
-  #print("ANOVA is not significant; post-hoc analysis is not applicable.")
-#}
+if (summary(aov_results_SV_EC)[[1]][["Pr(>F)"]][1] < 0.05) {
+  TukeyHSD(aov_results_SV_EC)
+} else {
+  print("ANOVA is not significant; post-hoc analysis is not applicable.")
+}
 
 
 
@@ -748,11 +748,11 @@ aov_results_SV_Temp <- aov(value ~ variable, data = longSV_Temp)
 summary(aov_results_SV_Temp)
 
 ##Post-hoc test if ANOVA significant
-#if (summary(aov_results_SV_Temp)[[1]][["Pr(>F)"]][1] < 0.05) {
-  #TukeyHSD(aov_results_SV_Temp)
-#} else {
-  #print("ANOVA is not significant; post-hoc analysis is not applicable.")
-#}
+if (summary(aov_results_SV_Temp)[[1]][["Pr(>F)"]][1] < 0.05) {
+  TukeyHSD(aov_results_SV_Temp)
+} else {
+  print("ANOVA is not significant; post-hoc analysis is not applicable.")
+}
 
 
 
@@ -1250,11 +1250,11 @@ aov_results_SV_VWC2 <- aov(value ~ variable, data = longSV_VWC2)
 summary(aov_results_SV_VWC2)
 
 ## Post-hoc test if ANOVA significant
-#if (summary(aov_results_SV_VWC2)[[1]][["Pr(>F)"]][1] < 0.05) {
-  #TukeyHSD(aov_results_SV_VWC2)
-#} else {
- # print("ANOVA is not significant; post-hoc analysis is not applicable.")
-#}
+if (summary(aov_results_SV_VWC2)[[1]][["Pr(>F)"]][1] < 0.05) {
+  TukeyHSD(aov_results_SV_VWC2)
+} else {
+  print("ANOVA is not significant; post-hoc analysis is not applicable.")
+}
 
 
 #################SV_EC2#############
@@ -1366,11 +1366,11 @@ aov_results_SV_EC2 <- aov(value ~ variable, data = longSV_EC2)
 summary(aov_results_SV_EC2)
 
 ##Post-hoc test if ANOVA significant
-#if (summary(aov_results_SV_EC2)[[1]][["Pr(>F)"]][1] < 0.05) {
-  #TukeyHSD(aov_results_SV_EC2)
-#} else {
+if (summary(aov_results_SV_EC2)[[1]][["Pr(>F)"]][1] < 0.05) {
+  TukeyHSD(aov_results_SV_EC2)
+} else {
   #print("ANOVA is not significant; post-hoc analysis is not applicable.")
-#}
+}
 
 
 #################SV_Temp2########
@@ -1990,11 +1990,11 @@ aov_results_SV_VWC3 <- aov(value ~ variable, data = longSV_VWC3)
 summary(aov_results_SV_VWC3)
 
 ##Post-hoc test if ANOVA significant
-#if (summary(aov_results_SV_VWC3)[[1]][["Pr(>F)"]][1] < 0.05) {
-  #TukeyHSD(aov_results_SV_VWC3)
-#} else {
- # print("ANOVA is not significant; post-hoc analysis is not applicable.")
-#}
+if (summary(aov_results_SV_VWC3)[[1]][["Pr(>F)"]][1] < 0.05) {
+  TukeyHSD(aov_results_SV_VWC3)
+} else {
+  print("ANOVA is not significant; post-hoc analysis is not applicable.")
+}
 
 
 
@@ -2107,11 +2107,11 @@ aov_results_SV_EC3 <- aov(value ~ variable, data = longSV_EC3)
 summary(aov_results_SV_EC3)
 
 ##Post-hoc test if ANOVA significant
-#if (summary(aov_results_SV_EC3)[[1]][["Pr(>F)"]][1] < 0.05) {
-  #TukeyHSD(aov_results_SV_EC3)
-#} else {
-  #print("ANOVA is not significant; post-hoc analysis is not applicable.")
-#}
+if (summary(aov_results_SV_EC3)[[1]][["Pr(>F)"]][1] < 0.05) {
+  TukeyHSD(aov_results_SV_EC3)
+} else {
+  print("ANOVA is not significant; post-hoc analysis is not applicable.")
+}
 
 
 
@@ -2223,11 +2223,11 @@ aov_results_SV_Temp3 <- aov(value ~ variable, data = longSV_Temp3)
 summary(aov_results_SV_Temp3)
 
 # Post-hoc test if ANOVA significant
-#if (summary(aov_results_SV_Temp3)[[1]][["Pr(>F)"]][1] < 0.05) {
-  #TukeyHSD(aov_results_SV_Temp3)
-#} else {
- # print("ANOVA is not significant; post-hoc analysis is not applicable.")
-#}
+if (summary(aov_results_SV_Temp3)[[1]][["Pr(>F)"]][1] < 0.05) {
+  TukeyHSD(aov_results_SV_Temp3)
+} else {
+  print("ANOVA is not significant; post-hoc analysis is not applicable.")
+}
 
 
 
